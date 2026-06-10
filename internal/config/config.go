@@ -1,6 +1,7 @@
 package config
 
 import (
+	"net/url"
 	"sort"
 	"strings"
 
@@ -10,6 +11,7 @@ import (
 type Config struct {
 	Title       string      `toml:"title"`
 	BaseURL     string      `toml:"baseURL"`
+	BasePath    string      `toml:"-"` // URL path prefix derived from BaseURL (e.g. "/nemi"); empty at root
 	Description string      `toml:"description"`
 	Author      Author      `toml:"author"`
 	Pages       PagesConfig `toml:"pages"`
@@ -119,5 +121,22 @@ func Load(path string) (Config, error) {
 	if cfg.Images.Sizes == "" {
 		cfg.Images.Sizes = "(max-width: 960px) 100vw, 960px"
 	}
+
+	cfg.BasePath = basePath(cfg.BaseURL)
 	return cfg, nil
+}
+
+// basePath extracts the URL path prefix from a baseURL so a site can be deployed
+// under a subpath (e.g. GitHub project pages at /<repo>/). "https://x.io/nemi/"
+// → "/nemi"; a root domain or an unparseable/relative value → "".
+func basePath(baseURL string) string {
+	u, err := url.Parse(baseURL)
+	if err != nil {
+		return ""
+	}
+	p := strings.TrimRight(u.Path, "/")
+	if p == "/" {
+		return ""
+	}
+	return p
 }

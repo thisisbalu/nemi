@@ -29,6 +29,11 @@ func Run(serveMode, drafts bool) (Stats, error) {
 	if err != nil {
 		return stats, err
 	}
+	// In serve mode the dev server hosts the site at the root, so ignore any
+	// subpath in baseURL and keep links root-relative.
+	if serveMode {
+		cfg.BasePath = ""
+	}
 
 	pages, err := content.Load("content", drafts)
 	if err != nil {
@@ -67,7 +72,7 @@ func Run(serveMode, drafts bool) (Stats, error) {
 	// The search index is cheap to write, so build it in every mode (search
 	// works in `nemi serve` too).
 	if !cfg.Search.Disable {
-		if err := search.Write("public", pages); err != nil {
+		if err := search.Write("public", cfg.BasePath, pages); err != nil {
 			return stats, err
 		}
 	}
@@ -85,6 +90,9 @@ func Run(serveMode, drafts bool) (Stats, error) {
 			if err := optimizeImages("public", cfg); err != nil {
 				return stats, err
 			}
+		}
+		if err := applyBasePath("public", cfg.BasePath); err != nil {
+			return stats, err
 		}
 		return stats, minifyTree("public")
 	}

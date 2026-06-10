@@ -28,7 +28,7 @@
     document.body.style.overflow = '';
   }
   function load() {
-    fetch('/search-index.json')
+    fetch((window.__nemiBase || '') + '/search-index.json')
       .then(function (r) { return r.json(); })
       .then(function (d) { index = d; run(); })
       .catch(function () { index = []; });

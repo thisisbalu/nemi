@@ -15,7 +15,7 @@ func TestBuild(t *testing.T) {
 		{Title: "", URL: "/skip/", Content: "no title"},        // skipped: no title
 		{Title: "Oops", Slug: "404", URL: "/404", Content: "x"}, // skipped: 404
 	}
-	got := Build(pages)
+	got := Build(pages, "")
 	if len(got) != 1 {
 		t.Fatalf("entries = %d, want 1 (titleless + 404 skipped)", len(got))
 	}
@@ -30,7 +30,7 @@ func TestBuild(t *testing.T) {
 
 func TestWrite(t *testing.T) {
 	dir := t.TempDir()
-	if err := Write(dir, []content.Page{{Title: "A", URL: "/a/", Content: "<p>x</p>"}}); err != nil {
+	if err := Write(dir, "", []content.Page{{Title: "A", URL: "/a/", Content: "<p>x</p>"}}); err != nil {
 		t.Fatalf("Write: %v", err)
 	}
 	raw, err := os.ReadFile(filepath.Join(dir, "search-index.json"))

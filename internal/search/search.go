@@ -34,8 +34,9 @@ func plain(htmlStr string) string {
 }
 
 // Build returns the index entries for the given content pages, skipping the 404
-// page and anything without a title.
-func Build(pages []content.Page) []Entry {
+// page and anything without a title. basePath is prepended to each entry URL so
+// result links resolve under a subpath deploy (empty for root deploys).
+func Build(pages []content.Page, basePath string) []Entry {
 	entries := make([]Entry, 0, len(pages))
 	for _, p := range pages {
 		if p.Title == "" || p.Slug == "404" {
@@ -43,7 +44,7 @@ func Build(pages []content.Page) []Entry {
 		}
 		entries = append(entries, Entry{
 			Title:   p.Title,
-			URL:     p.URL,
+			URL:     basePath + p.URL,
 			Tags:    p.Tags,
 			Summary: p.Summary,
 			Body:    plain(string(p.Content)),
@@ -53,8 +54,8 @@ func Build(pages []content.Page) []Entry {
 }
 
 // Write marshals the index and writes it to publicDir/search-index.json.
-func Write(publicDir string, pages []content.Page) error {
-	b, err := json.Marshal(Build(pages))
+func Write(publicDir, basePath string, pages []content.Page) error {
+	b, err := json.Marshal(Build(pages, basePath))
 	if err != nil {
 		return err
 	}
