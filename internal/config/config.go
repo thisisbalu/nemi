@@ -17,6 +17,13 @@ type Config struct {
 	Paginate    int          `toml:"paginate"`
 	Giscus      Giscus       `toml:"giscus"`
 	Images      ImagesConfig `toml:"images"`
+	OG          OGConfig     `toml:"og"`
+}
+
+// OGConfig controls auto-generated Open Graph (social share) card images.
+// On by default; set disable = true to skip generating them.
+type OGConfig struct {
+	Disable bool `toml:"disable"`
 }
 
 // ImagesConfig controls the responsive image pipeline. Zero-valued fields fall

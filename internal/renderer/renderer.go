@@ -241,6 +241,9 @@ func (r *Renderer) renderPage(site content.Site, page content.Page) error {
 	}
 
 	page.Permalink = absURL(site.Config.BaseURL, page.URL)
+	if page.Slug != "404" {
+		page.OGImage = absURL(site.Config.BaseURL, content.OGImagePath(page.Slug))
+	}
 
 	var buf bytes.Buffer
 	data := TemplateData{Site: site, Page: page, ServeMode: r.serveMode}

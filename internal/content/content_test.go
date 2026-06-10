@@ -104,6 +104,21 @@ func TestResolveRefsBroken(t *testing.T) {
 	}
 }
 
+// --- OGImagePath ---
+
+func TestOGImagePath(t *testing.T) {
+	cases := map[string]string{
+		"":          "/og/index.png",
+		"about":     "/og/about.png",
+		"blog/post": "/og/blog/post.png",
+	}
+	for slug, want := range cases {
+		if got := OGImagePath(slug); got != want {
+			t.Errorf("OGImagePath(%q) = %q, want %q", slug, got, want)
+		}
+	}
+}
+
 // --- Mermaid + math ---
 
 func TestMermaidBlock(t *testing.T) {

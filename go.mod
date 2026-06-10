@@ -10,6 +10,7 @@ require (
 	github.com/tdewolff/minify/v2 v2.24.13
 	github.com/yuin/goldmark v1.8.2
 	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
+	golang.org/x/image v0.42.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -18,6 +19,6 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/tdewolff/parse/v2 v2.8.12 // indirect
-	golang.org/x/image v0.42.0 // indirect
 	golang.org/x/sys v0.43.0 // indirect
+	golang.org/x/text v0.38.0 // indirect
 )

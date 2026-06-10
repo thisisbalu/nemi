@@ -1,6 +1,7 @@
 package renderer
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"reflect"
@@ -26,6 +27,42 @@ var funcMap = template.FuncMap{
 	"where":      where,
 	"sortByDate": sortByDate,
 	"uniqueTags": uniqueTags,
+	"jsonLD":     jsonLD,
+}
+
+// jsonLD builds a schema.org JSON-LD <script> for a page: BlogPosting for
+// section articles, WebSite otherwise. The object is marshaled with
+// encoding/json (which escapes <, >, & to \u00xx), so the result is always
+// valid and safe to drop inside a <script> element.
+func jsonLD(page content.Page, site content.Site) template.HTML {
+	m := map[string]any{"@context": "https://schema.org"}
+	if page.Section != "" && !page.IsSection {
+		m["@type"] = "BlogPosting"
+		m["headline"] = page.Title
+		if !page.Date.IsZero() {
+			m["datePublished"] = page.Date.Format("2006-01-02")
+		}
+		if name := site.Config.Author.Name; name != "" {
+			m["author"] = map[string]any{"@type": "Person", "name": name}
+		}
+		if page.OGImage != "" {
+			m["image"] = page.OGImage
+		}
+		if page.Permalink != "" {
+			m["mainEntityOfPage"] = page.Permalink
+		}
+	} else {
+		m["@type"] = "WebSite"
+		m["name"] = site.Config.Title
+		if site.Config.BaseURL != "" {
+			m["url"] = site.Config.BaseURL
+		}
+	}
+	b, err := json.Marshal(m)
+	if err != nil {
+		return ""
+	}
+	return template.HTML(`<script type="application/ld+json">` + string(b) + `</script>`)
 }
 
 // uniqueTags returns the sorted, de-duplicated set of tags used across pages.

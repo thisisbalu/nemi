@@ -143,8 +143,20 @@ type Page struct {
 	Live        string
 	Featured    bool
 	Type        string
-	Math        bool // load KaTeX on this page (frontmatter math: true)
-	Mermaid     bool // page contains a ```mermaid diagram (auto-detected)
+	Math        bool   // load KaTeX on this page (frontmatter math: true)
+	Mermaid     bool   // page contains a ```mermaid diagram (auto-detected)
+	OGImage     string // absolute URL of this page's social card (set by renderer)
+}
+
+// OGImagePath returns the root-relative path of a page's generated social card,
+// e.g. slug "blog/post" → "/og/blog/post.png". The empty (home) slug maps to
+// "/og/index.png". Single source of truth shared by the renderer (which builds
+// the absolute og:image URL) and the build's OG-image generator.
+func OGImagePath(slug string) string {
+	if slug == "" {
+		slug = "index"
+	}
+	return "/og/" + slug + ".png"
 }
 
 // Heading is one entry in a page's table of contents.
