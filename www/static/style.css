@@ -1235,6 +1235,11 @@ section > h1 {
     padding: 0.4rem;
     overflow-y: auto;
 }
+/* Collapse the results area until there's something to show, so the empty
+   modal is just the input + hint with a single divider between them. */
+.search-results:empty {
+    display: none;
+}
 .search-results .sr {
     display: block;
     padding: 0.6rem 0.8rem;
@@ -1271,9 +1276,13 @@ section > h1 {
 .search-hint {
     margin: 0;
     padding: 0.6rem 1.2rem;
-    border-top: 1px solid var(--border);
     color: var(--muted);
     font-size: 0.75rem;
+}
+/* Only separate the hint with a divider when results are actually showing
+   (otherwise the input's bottom border is the single divider). */
+.search-results:not(:empty) ~ .search-hint {
+    border-top: 1px solid var(--border);
 }
 .search-hint kbd {
     font-family: inherit;
