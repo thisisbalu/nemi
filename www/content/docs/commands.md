@@ -46,7 +46,7 @@ nemi migrate jekyll <src> [dest]   # convert a Jekyll site
 ```
 
 Converts an existing site to Nemi format. `dest` defaults to `<src>-nemi`.
-See [Migrating](/docs/) for details.
+See [Migrating](@/docs/migrating.md) for details.
 
 ## version
 
