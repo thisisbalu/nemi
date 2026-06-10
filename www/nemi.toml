@@ -1,5 +1,5 @@
 title       = "Nemi"
-baseURL     = "https://thisisbalu.github.io/nemi/"
+baseURL     = "https://balasubramanyamlanka.com/nemi/"
 description = "A fast, zero-config static site generator that builds beautiful sites out of the box."
 paginate    = 20
 
