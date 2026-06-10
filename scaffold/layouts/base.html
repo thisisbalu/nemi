@@ -1,0 +1,42 @@
+{{define "base"}}<!doctype html>
+<html lang="en">
+<head>
+  {{template "head" .}}
+</head>
+<body{{if eq .Page.URL "/"}} class="home"{{end}}>
+  <header class="site-header">
+    <div class="wrap">
+      {{if ne .Page.URL "/"}}<a class="site-title" href="/">{{.Site.Config.Title}}</a>{{else}}<a class="site-title" href="/">{{.Site.Config.Author.Name}}</a>{{end}}
+      <nav class="site-nav">
+        {{range .Site.Config.Menu}}<a href="{{.URL}}"{{if .IsExternal}} target="_blank" rel="noopener"{{end}}>{{.Name}}</a>{{end}}
+        {{template "theme-toggle" .}}
+      </nav>
+    </div>
+    <div class="scroll-progress"></div>
+  </header>
+  <div class="wrap">
+    <main>
+      {{block "content" .}}{{end}}
+    </main>
+    <footer class="site-footer">
+      <p>© {{now.Year}} {{.Site.Config.Author.Name}}{{if .Site.Config.Author.GitHub}} · <a href="https://github.com/{{.Site.Config.Author.GitHub}}">GitHub</a>{{end}}{{if .Site.Config.Author.Twitter}} · <a href="https://twitter.com/{{.Site.Config.Author.Twitter}}">Twitter</a>{{end}}</p>
+    </footer>
+  </div>
+  <button class="to-top" type="button" aria-label="Back to top">↑</button>
+  {{template "scripts" .}}
+  {{if .Page.Math}}
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false},{left:'$',right:'$',display:false}],throwOnError:false});"></script>
+  {{end}}
+  {{if .Page.Mermaid}}
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    var d = document.documentElement;
+    var dark = d.dataset.theme === 'dark' || (matchMedia('(prefers-color-scheme: dark)').matches && d.dataset.theme !== 'light');
+    mermaid.initialize({ startOnLoad: true, theme: dark ? 'dark' : 'neutral' });
+  </script>
+  {{end}}
+  {{if .ServeMode}}<script>(function(){var s=new EventSource('/__nemi_reload');s.onmessage=function(e){if(e.data.indexOf('error:')===0){var o=document.getElementById('__nemi_err')||document.body.appendChild(document.createElement('div'));o.id='__nemi_err';o.style.cssText='position:fixed;inset:0;z-index:99999;background:#1f2937;color:#fca5a5;font:14px/1.6 ui-monospace,monospace;padding:2rem;white-space:pre-wrap;overflow:auto';o.textContent='Build error\n\n'+e.data.slice(6);}else{location.reload();}};})();</script>{{end}}
+</body>
+</html>
+{{end}}

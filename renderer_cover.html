@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>renderer: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">nemi/internal/renderer/renderer.go (98.5%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package renderer
+
+import (
+        "bytes"
+        "fmt"
+        "html/template"
+        "os"
+        "path/filepath"
+        "sort"
+        "strings"
+
+        "nemi/internal/content"
+)
+
+type TemplateData struct {
+        Site      content.Site
+        Page      content.Page
+        ServeMode bool
+}
+
+type Renderer struct {
+        layoutsDir string
+        outputDir  string
+        serveMode  bool
+}
+
+func New(layoutsDir, outputDir string, serveMode bool) *Renderer <span class="cov8" title="1">{
+        return &amp;Renderer{
+                layoutsDir: layoutsDir,
+                outputDir:  outputDir,
+                serveMode:  serveMode,
+        }
+}</span>
+
+func (r *Renderer) Render(site content.Site) error <span class="cov8" title="1">{
+        if err := os.MkdirAll(r.outputDir, 0755); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        // Group non-index pages by section
+        <span class="cov8" title="1">sectionPages := map[string][]content.Page{}
+        hasIndex := map[string]bool{}
+
+        for _, p := range site.Pages </span><span class="cov8" title="1">{
+                if p.IsSection </span><span class="cov8" title="1">{
+                        hasIndex[p.Section] = true
+                }</span> else<span class="cov8" title="1"> {
+                        sectionPages[p.Section] = append(sectionPages[p.Section], p)
+                }</span>
+        }
+
+        // Render explicit pages; populate .Pages for section list pages
+        <span class="cov8" title="1">for _, page := range site.Pages </span><span class="cov8" title="1">{
+                if page.IsSection </span><span class="cov8" title="1">{
+                        page.Pages = sortByDate(sectionPages[page.Section])
+                }</span>
+                <span class="cov8" title="1">if err := r.renderPage(site, page); err != nil </span><span class="cov8" title="1">{
+                        return err
+                }</span>
+        }
+
+        // Auto-generate list pages for sections with no _index.md
+        <span class="cov8" title="1">for section, pages := range sectionPages </span><span class="cov8" title="1">{
+                if section == "" || hasIndex[section] </span><span class="cov8" title="1">{
+                        continue</span>
+                }
+                <span class="cov8" title="1">list := content.Page{
+                        Title:     capitalize(section),
+                        URL:       "/" + section + "/",
+                        Slug:      section,
+                        Section:   section,
+                        IsSection: true,
+                        Pages:     sortByDate(pages),
+                        Layout:    section + "-list",
+                }
+                if err := r.renderPage(site, list); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (r *Renderer) renderPage(site content.Site, page content.Page) error <span class="cov8" title="1">{
+        tmpl, err := r.loadTemplate(page.Layout)
+        if err != nil </span><span class="cov8" title="1">{
+                return fmt.Errorf("layout %q: %w", page.Layout, err)
+        }</span>
+
+        <span class="cov8" title="1">var buf bytes.Buffer
+        data := TemplateData{Site: site, Page: page, ServeMode: r.serveMode}
+        if err := tmpl.ExecuteTemplate(&amp;buf, "base", data); err != nil </span><span class="cov8" title="1">{
+                return fmt.Errorf("render %q: %w", page.URL, err)
+        }</span>
+
+        <span class="cov8" title="1">outPath := r.outputPath(page.Slug)
+        if err := os.MkdirAll(filepath.Dir(outPath), 0755); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+        <span class="cov8" title="1">return os.WriteFile(outPath, buf.Bytes(), 0644)</span>
+}
+
+func (r *Renderer) loadTemplate(layout string) (*template.Template, error) <span class="cov8" title="1">{
+        baseContent, err := r.templateContent("base.html")
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">layoutContent, err := r.templateContent(layout + ".html")
+        if err != nil </span><span class="cov8" title="1">{
+                fallback := "single.html"
+                if strings.HasSuffix(layout, "-list") </span><span class="cov8" title="1">{
+                        fallback = "list.html"
+                }</span>
+                <span class="cov8" title="1">layoutContent, err = r.templateContent(fallback)
+                if err != nil </span><span class="cov8" title="1">{
+                        return nil, err
+                }</span>
+        }
+
+        <span class="cov8" title="1">tmpl := template.New("base").Funcs(template.FuncMap{
+                "not": func(v bool) bool </span><span class="cov8" title="1">{ return !v }</span>,
+        })
+        <span class="cov8" title="1">if _, err := tmpl.Parse(baseContent); err != nil </span><span class="cov8" title="1">{
+                return nil, fmt.Errorf("parse base.html: %w", err)
+        }</span>
+        <span class="cov8" title="1">if _, err := tmpl.New(layout + ".html").Parse(layoutContent); err != nil </span><span class="cov8" title="1">{
+                return nil, fmt.Errorf("parse %s.html: %w", layout, err)
+        }</span>
+        <span class="cov8" title="1">return tmpl, nil</span>
+}
+
+func (r *Renderer) templateContent(name string) (string, error) <span class="cov8" title="1">{
+        data, err := os.ReadFile(filepath.Join(r.layoutsDir, name))
+        if err != nil </span><span class="cov8" title="1">{
+                return "", fmt.Errorf("layout %q not found in %s/", name, r.layoutsDir)
+        }</span>
+        <span class="cov8" title="1">return string(data), nil</span>
+}
+
+func (r *Renderer) outputPath(slug string) string <span class="cov8" title="1">{
+        if slug == "" </span><span class="cov8" title="1">{
+                return filepath.Join(r.outputDir, "index.html")
+        }</span>
+        <span class="cov8" title="1">if slug == "404" </span><span class="cov8" title="1">{
+                return filepath.Join(r.outputDir, "404.html")
+        }</span>
+        <span class="cov8" title="1">return filepath.Join(r.outputDir, filepath.FromSlash(slug), "index.html")</span>
+}
+
+func sortByDate(pages []content.Page) []content.Page <span class="cov8" title="1">{
+        out := make([]content.Page, len(pages))
+        copy(out, pages)
+        sort.Slice(out, func(i, j int) bool </span><span class="cov8" title="1">{
+                return out[i].Date.After(out[j].Date)
+        }</span>)
+        <span class="cov8" title="1">return out</span>
+}
+
+func capitalize(s string) string <span class="cov8" title="1">{
+        if s == "" </span><span class="cov8" title="1">{
+                return s
+        }</span>
+        <span class="cov8" title="1">return strings.ToUpper(s[:1]) + s[1:]</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

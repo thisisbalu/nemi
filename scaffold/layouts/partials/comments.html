@@ -1,0 +1,15 @@
+<section class="comments">
+  <script src="https://giscus.app/client.js"
+    data-repo="{{.Site.Config.Giscus.Repo}}"
+    data-repo-id="{{.Site.Config.Giscus.RepoID}}"
+    data-category="{{.Site.Config.Giscus.Category}}"
+    data-category-id="{{.Site.Config.Giscus.CategoryID}}"
+    data-mapping="{{with .Site.Config.Giscus.Mapping}}{{.}}{{else}}pathname{{end}}"
+    data-strict="1"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-theme="preferred_color_scheme"
+    crossorigin="anonymous"
+    async>
+  </script>
+</section>

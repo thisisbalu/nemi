@@ -1,0 +1,55 @@
+title       = "Your Name"
+baseURL     = "http://localhost:3000"
+description = "Developer · Builder · Writer"
+paginate    = 10   # posts per list page before /page/2/ etc.
+
+[author]
+name     = "Your Name"
+tagline  = "Developer · Builder · Writer"
+bio      = "I build things for the web. Currently focused on developer tools and open-source."
+email    = "you@example.com"
+github   = "yourusername"
+twitter  = "yourusername"
+linkedin = "yourusername"
+
+[pages]
+about        = true
+resume       = true
+projects     = true
+blog         = true
+updates      = true
+now          = true
+uses         = true
+speaking     = false
+open-source  = false
+contact      = true
+
+# Navigation menu — ordered by weight. Set external = true (or use an http
+# URL) to open the link in a new tab.
+[[menu]]
+name   = "About"
+url    = "/about/"
+weight = 1
+
+[[menu]]
+name   = "Blog"
+url    = "/blog/"
+weight = 2
+
+[[menu]]
+name   = "Projects"
+url    = "/projects/"
+weight = 3
+
+[[menu]]
+name   = "Contact"
+url    = "/contact/"
+weight = 4
+
+# Comments via Giscus (optional). Create a repo at giscus.app, then fill these
+# in and uncomment to enable comments on posts. Off by default.
+# [giscus]
+# repo        = "you/your-repo"
+# repo_id     = "R_xxxxxxxx"
+# category    = "Announcements"
+# category_id = "DIC_xxxxxxxx"

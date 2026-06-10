@@ -1,0 +1,11 @@
+<article class="project">
+  <h3>{{if .Live}}<a href="{{.Live}}">{{.Title}}</a>{{else if .GitHub}}<a href="https://github.com/{{.GitHub}}">{{.Title}}</a>{{else}}<a href="{{.URL}}">{{.Title}}</a>{{end}}</h3>
+  {{with .Description}}<p class="desc">{{.}}</p>{{end}}
+  <div class="meta">
+    <span class="tech">{{range $i, $t := .Tech}}{{if $i}} · {{end}}{{$t}}{{end}}</span>
+    <span class="links">
+      {{with .GitHub}}<a href="https://github.com/{{.}}">GitHub ↗</a>{{end}}
+      {{with .Live}}<a href="{{.}}">Live ↗</a>{{end}}
+    </span>
+  </div>
+</article>

@@ -1,0 +1,1226 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>build: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">nemi/internal/build/build.go (84.6%)</option>
+				
+				<option value="file1">nemi/internal/config/config.go (100.0%)</option>
+				
+				<option value="file2">nemi/internal/content/content.go (98.6%)</option>
+				
+				<option value="file3">nemi/internal/migrate/hugo.go (92.2%)</option>
+				
+				<option value="file4">nemi/internal/migrate/jekyll.go (88.9%)</option>
+				
+				<option value="file5">nemi/internal/migrate/migrate.go (92.2%)</option>
+				
+				<option value="file6">nemi/internal/renderer/renderer.go (92.5%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package build
+
+import (
+        "io/fs"
+        "os"
+        "path/filepath"
+
+        "nemi/internal/config"
+        "nemi/internal/content"
+        "nemi/internal/renderer"
+)
+
+func Run(serveMode, drafts bool) error <span class="cov8" title="1">{
+        cfg, err := config.Load("nemi.toml")
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">pages, err := content.Load("content", drafts)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">site := content.Site{Config: cfg, Pages: pages}
+
+        if err := os.RemoveAll("public"); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">r := renderer.New("layouts", "public", serveMode)
+        if err := r.Render(site); err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return copyStatic("static", "public")</span>
+}
+
+func copyStatic(src, dst string) error <span class="cov8" title="1">{
+        return filepath.WalkDir(src, func(path string, d fs.DirEntry, err error) error </span><span class="cov8" title="1">{
+                if err != nil </span><span class="cov8" title="1">{
+                        if os.IsNotExist(err) </span><span class="cov8" title="1">{
+                                return nil
+                        }</span>
+                        <span class="cov0" title="0">return err</span>
+                }
+                <span class="cov8" title="1">rel, _ := filepath.Rel(src, path)
+                dest := filepath.Join(dst, rel)
+                if d.IsDir() </span><span class="cov8" title="1">{
+                        return os.MkdirAll(dest, 0755)
+                }</span>
+                <span class="cov8" title="1">data, err := os.ReadFile(path)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov8" title="1">return os.WriteFile(dest, data, 0644)</span>
+        })
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package config
+
+import "github.com/BurntSushi/toml"
+
+type Config struct {
+        Title       string      `toml:"title"`
+        BaseURL     string      `toml:"baseURL"`
+        Description string      `toml:"description"`
+        Author      Author      `toml:"author"`
+        Pages       PagesConfig `toml:"pages"`
+}
+
+type Author struct {
+        Name     string `toml:"name"`
+        Tagline  string `toml:"tagline"`
+        Bio      string `toml:"bio"`
+        Email    string `toml:"email"`
+        GitHub   string `toml:"github"`
+        Twitter  string `toml:"twitter"`
+        LinkedIn string `toml:"linkedin"`
+}
+
+type PagesConfig struct {
+        About      bool `toml:"about"`
+        Resume     bool `toml:"resume"`
+        Projects   bool `toml:"projects"`
+        OpenSource bool `toml:"open-source"`
+        Blog       bool `toml:"blog"`
+        Updates    bool `toml:"updates"`
+        Now        bool `toml:"now"`
+        Uses       bool `toml:"uses"`
+        Speaking   bool `toml:"speaking"`
+        Contact    bool `toml:"contact"`
+}
+
+func Load(path string) (Config, error) <span class="cov8" title="1">{
+        var cfg Config
+        _, err := toml.DecodeFile(path, &amp;cfg)
+        return cfg, err
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package content
+
+import (
+        "bytes"
+        "fmt"
+        "html/template"
+        "io/fs"
+        "os"
+        "path/filepath"
+        "strings"
+        "time"
+
+        "github.com/yuin/goldmark"
+        "gopkg.in/yaml.v3"
+
+        "nemi/internal/config"
+)
+
+type Page struct {
+        Title       string
+        Date        time.Time
+        Draft       bool
+        Tags        []string
+        Description string
+        Slug        string
+        URL         string
+        Content     template.HTML
+        Section     string
+        Layout      string
+        Pages       []Page
+        IsSection   bool
+        Tech        []string
+        GitHub      string
+        Live        string
+        Featured    bool
+        Type        string
+}
+
+type Site struct {
+        Config config.Config
+        Pages  []Page
+}
+
+type frontmatter struct {
+        Title       string    `yaml:"title"`
+        Date        time.Time `yaml:"date"`
+        Draft       bool      `yaml:"draft"`
+        Tags        []string  `yaml:"tags"`
+        Description string    `yaml:"description"`
+        Layout      string    `yaml:"layout"`
+        Tech        []string  `yaml:"tech"`
+        GitHub      string    `yaml:"github"`
+        Live        string    `yaml:"live"`
+        Featured    bool      `yaml:"featured"`
+        Type        string    `yaml:"type"`
+}
+
+func Load(dir string, drafts bool) ([]Page, error) <span class="cov8" title="1">{
+        var pages []Page
+        err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error </span><span class="cov8" title="1">{
+                if err != nil || d.IsDir() || !strings.HasSuffix(path, ".md") </span><span class="cov8" title="1">{
+                        return err
+                }</span>
+                <span class="cov8" title="1">page, err := parseFile(path, dir)
+                if err != nil </span><span class="cov8" title="1">{
+                        return fmt.Errorf("%s: %w", path, err)
+                }</span>
+                <span class="cov8" title="1">if !page.Draft || drafts </span><span class="cov8" title="1">{
+                        pages = append(pages, page)
+                }</span>
+                <span class="cov8" title="1">return nil</span>
+        })
+        <span class="cov8" title="1">return pages, err</span>
+}
+
+func parseFile(path, dir string) (Page, error) <span class="cov8" title="1">{
+        data, err := os.ReadFile(path)
+        if err != nil </span><span class="cov8" title="1">{
+                return Page{}, err
+        }</span>
+
+        <span class="cov8" title="1">fm, body := splitFrontmatter(data)
+
+        var front frontmatter
+        if len(fm) &gt; 0 </span><span class="cov8" title="1">{
+                if err := yaml.Unmarshal(fm, &amp;front); err != nil </span><span class="cov8" title="1">{
+                        return Page{}, err
+                }</span>
+        }
+
+        <span class="cov8" title="1">var buf bytes.Buffer
+        if err := goldmark.Convert(body, &amp;buf); err != nil </span><span class="cov0" title="0">{
+                return Page{}, err
+        }</span>
+
+        <span class="cov8" title="1">slug := pathSlug(path, dir)
+        section := pathSection(path, dir)
+        isSection := isIndexFile(path, dir)
+
+        layout := front.Layout
+        if layout == "" </span><span class="cov8" title="1">{
+                layout = resolveLayout(slug, section, isSection)
+        }</span>
+
+        <span class="cov8" title="1">return Page{
+                Title:       front.Title,
+                Date:        front.Date,
+                Draft:       front.Draft,
+                Tags:        front.Tags,
+                Description: front.Description,
+                Slug:        slug,
+                URL:         slugURL(slug),
+                Content:     template.HTML(buf.String()),
+                Section:     section,
+                IsSection:   isSection,
+                Layout:      layout,
+                Tech:        front.Tech,
+                GitHub:      front.GitHub,
+                Live:        front.Live,
+                Featured:    front.Featured,
+                Type:        front.Type,
+        }, nil</span>
+}
+
+func resolveLayout(slug, section string, isSection bool) string <span class="cov8" title="1">{
+        if slug == "" </span><span class="cov8" title="1">{
+                return "home"
+        }</span>
+        <span class="cov8" title="1">for _, p := range []string{"about", "resume", "now", "uses", "speaking", "contact", "open-source"} </span><span class="cov8" title="1">{
+                if slug == p </span><span class="cov8" title="1">{
+                        return p
+                }</span>
+        }
+        <span class="cov8" title="1">if isSection </span><span class="cov8" title="1">{
+                return section + "-list"
+        }</span>
+        <span class="cov8" title="1">if section != "" </span><span class="cov8" title="1">{
+                return section + "-single"
+        }</span>
+        <span class="cov8" title="1">return "single"</span>
+}
+
+func isIndexFile(path, dir string) bool <span class="cov8" title="1">{
+        rel, _ := filepath.Rel(dir, path)
+        rel = filepath.ToSlash(rel)
+        base := strings.TrimSuffix(rel, ".md")
+        return strings.HasSuffix(base, "/_index") || strings.HasSuffix(base, "/index")
+}</span>
+
+func splitFrontmatter(data []byte) (fm, body []byte) <span class="cov8" title="1">{
+        if !bytes.HasPrefix(data, []byte("---\n")) </span><span class="cov8" title="1">{
+                return nil, data
+        }</span>
+        <span class="cov8" title="1">rest := data[4:]
+        idx := bytes.Index(rest, []byte("\n---"))
+        if idx == -1 </span><span class="cov8" title="1">{
+                return nil, data
+        }</span>
+        <span class="cov8" title="1">end := idx + 4
+        if end &lt; len(rest) &amp;&amp; rest[end] == '\n' </span><span class="cov8" title="1">{
+                end++
+        }</span>
+        <span class="cov8" title="1">return rest[:idx], rest[end:]</span>
+}
+
+func pathSlug(path, dir string) string <span class="cov8" title="1">{
+        rel, _ := filepath.Rel(dir, path)
+        rel = strings.TrimSuffix(rel, ".md")
+        rel = filepath.ToSlash(rel)
+        rel = strings.TrimSuffix(rel, "/_index")
+        if rel == "index" || rel == "_index" </span><span class="cov8" title="1">{
+                return ""
+        }</span>
+        <span class="cov8" title="1">rel = strings.TrimSuffix(rel, "/index")
+        return rel</span>
+}
+
+func slugURL(slug string) string <span class="cov8" title="1">{
+        if slug == "" </span><span class="cov8" title="1">{
+                return "/"
+        }</span>
+        <span class="cov8" title="1">return "/" + slug + "/"</span>
+}
+
+func pathSection(path, dir string) string <span class="cov8" title="1">{
+        rel, _ := filepath.Rel(dir, path)
+        parts := strings.SplitN(filepath.ToSlash(rel), "/", 2)
+        if len(parts) &gt; 1 </span><span class="cov8" title="1">{
+                return parts[0]
+        }</span>
+        <span class="cov8" title="1">return ""</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package migrate
+
+import (
+        "bytes"
+        "encoding/json"
+        "fmt"
+        "io/fs"
+        "os"
+        "path/filepath"
+        "strings"
+        "time"
+
+        "github.com/BurntSushi/toml"
+        "gopkg.in/yaml.v3"
+        "nemi/internal/config"
+)
+
+// Hugo migrates a Hugo site at src into a new Nemi site at dst.
+func Hugo(src, dst string) (*Result, error) <span class="cov8" title="1">{
+        if _, err := os.Stat(dst); err == nil </span><span class="cov8" title="1">{
+                return nil, fmt.Errorf("destination %q already exists", dst)
+        }</span>
+        <span class="cov8" title="1">if err := os.MkdirAll(dst, 0755); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">r := &amp;Result{}
+
+        cfg, err := loadHugoConfig(src)
+        if err != nil </span><span class="cov8" title="1">{
+                r.warn("could not read Hugo config: " + err.Error())
+        }</span>
+        <span class="cov8" title="1">if err := writeNemiToml(dst, cfg); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">contentSrc := filepath.Join(src, "content")
+        if _, err := os.Stat(contentSrc); err == nil </span><span class="cov8" title="1">{
+                if err := migrateHugoContent(contentSrc, filepath.Join(dst, "content"), r); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+        }
+
+        <span class="cov8" title="1">staticSrc := filepath.Join(src, "static")
+        if _, err := os.Stat(staticSrc); err == nil </span><span class="cov8" title="1">{
+                n, err := copyDir(staticSrc, filepath.Join(dst, "static"))
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+                <span class="cov8" title="1">r.Static += n</span>
+        }
+
+        <span class="cov8" title="1">return r, nil</span>
+}
+
+func migrateHugoContent(src, dst string, r *Result) error <span class="cov8" title="1">{
+        return filepath.WalkDir(src, func(path string, d fs.DirEntry, err error) error </span><span class="cov8" title="1">{
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil
+                }</span>
+                <span class="cov8" title="1">rel, _ := filepath.Rel(src, path)
+                dstPath := filepath.Join(dst, rel)
+
+                if d.IsDir() </span><span class="cov8" title="1">{
+                        return os.MkdirAll(dstPath, 0755)
+                }</span>
+                <span class="cov8" title="1">if !strings.HasSuffix(path, ".md") </span><span class="cov0" title="0">{
+                        return nil
+                }</span>
+
+                <span class="cov8" title="1">data, err := os.ReadFile(path)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov8" title="1">fm, body, err := parseHugoFrontmatter(data)
+                if err != nil </span><span class="cov8" title="1">{
+                        r.warn(fmt.Sprintf("%s: frontmatter parse error: %v — copied as-is", rel, err))
+                        return copyFile(path, dstPath)
+                }</span>
+                <span class="cov8" title="1">if hasHugoShortcodes(body) </span><span class="cov8" title="1">{
+                        r.warn(fmt.Sprintf("%s: contains Hugo shortcodes — review manually", rel))
+                }</span>
+
+                <span class="cov8" title="1">nemiFm := nemiFM{
+                        Title:       fm.Title,
+                        Date:        fmFromTime(fm.Date),
+                        Draft:       fm.Draft,
+                        Tags:        fm.Tags,
+                        Description: fm.Description,
+                }
+                if err := writePage(dstPath, nemiFm, body); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov8" title="1">r.Pages++
+                return nil</span>
+        })
+}
+
+func fmFromTime(t time.Time) string <span class="cov8" title="1">{
+        if t.IsZero() </span><span class="cov8" title="1">{
+                return ""
+        }</span>
+        <span class="cov8" title="1">return t.Format("2006-01-02")</span>
+}
+
+func hasHugoShortcodes(body []byte) bool <span class="cov8" title="1">{
+        s := string(body)
+        return strings.Contains(s, "{{&lt;") || strings.Contains(s, "{{%")
+}</span>
+
+type hugoFM struct {
+        Title       string    `toml:"title"       yaml:"title"       json:"title"`
+        Date        time.Time `toml:"date"        yaml:"date"        json:"date"`
+        Draft       bool      `toml:"draft"       yaml:"draft"       json:"draft"`
+        Tags        []string  `toml:"tags"        yaml:"tags"        json:"tags"`
+        Description string    `toml:"description" yaml:"description" json:"description"`
+}
+
+func parseHugoFrontmatter(data []byte) (hugoFM, []byte, error) <span class="cov8" title="1">{
+        var fm hugoFM
+
+        // TOML: +++
+        if bytes.HasPrefix(data, []byte("+++\n")) </span><span class="cov8" title="1">{
+                rest := data[4:]
+                idx := bytes.Index(rest, []byte("\n+++"))
+                if idx == -1 </span><span class="cov8" title="1">{
+                        return fm, data, nil
+                }</span>
+                <span class="cov8" title="1">end := idx + 4
+                if end &lt; len(rest) &amp;&amp; rest[end] == '\n' </span><span class="cov8" title="1">{
+                        end++
+                }</span>
+                <span class="cov8" title="1">_, err := toml.Decode(string(rest[:idx]), &amp;fm)
+                return fm, rest[end:], err</span>
+        }
+
+        // YAML: ---
+        <span class="cov8" title="1">if bytes.HasPrefix(data, []byte("---\n")) </span><span class="cov8" title="1">{
+                rest := data[4:]
+                idx := bytes.Index(rest, []byte("\n---"))
+                if idx == -1 </span><span class="cov8" title="1">{
+                        return fm, data, nil
+                }</span>
+                <span class="cov8" title="1">end := idx + 4
+                if end &lt; len(rest) &amp;&amp; rest[end] == '\n' </span><span class="cov8" title="1">{
+                        end++
+                }</span>
+                <span class="cov8" title="1">err := yaml.Unmarshal(rest[:idx], &amp;fm)
+                return fm, rest[end:], err</span>
+        }
+
+        // JSON: opening brace
+        <span class="cov8" title="1">if bytes.HasPrefix(bytes.TrimSpace(data), []byte("{")) </span><span class="cov8" title="1">{
+                idx := bytes.Index(data, []byte("\n}"))
+                if idx != -1 </span><span class="cov8" title="1">{
+                        end := idx + 2
+                        if end &lt; len(data) &amp;&amp; data[end] == '\n' </span><span class="cov8" title="1">{
+                                end++
+                        }</span>
+                        <span class="cov8" title="1">err := json.Unmarshal(data[:idx+2], &amp;fm)
+                        return fm, data[end:], err</span>
+                }
+        }
+
+        <span class="cov8" title="1">return fm, data, nil</span>
+}
+
+func loadHugoConfig(src string) (config.Config, error) <span class="cov8" title="1">{
+        candidates := []string{
+                "hugo.toml", "config.toml",
+                "hugo.yaml", "config.yaml", "hugo.yml", "config.yml",
+                "hugo.json", "config.json",
+        }
+        for _, name := range candidates </span><span class="cov8" title="1">{
+                data, err := os.ReadFile(filepath.Join(src, name))
+                if err != nil </span><span class="cov8" title="1">{
+                        continue</span>
+                }
+                <span class="cov8" title="1">return parseHugoConfig(data, strings.ToLower(filepath.Ext(name)))</span>
+        }
+        <span class="cov8" title="1">return config.Config{}, fmt.Errorf("no Hugo config file found")</span>
+}
+
+func parseHugoConfig(data []byte, ext string) (config.Config, error) <span class="cov8" title="1">{
+        var m map[string]any
+        var err error
+        switch ext </span>{
+        case ".toml":<span class="cov8" title="1">
+                _, err = toml.Decode(string(data), &amp;m)</span>
+        case ".yaml", ".yml":<span class="cov8" title="1">
+                err = yaml.Unmarshal(data, &amp;m)</span>
+        case ".json":<span class="cov8" title="1">
+                err = json.Unmarshal(data, &amp;m)</span>
+        }
+        <span class="cov8" title="1">if err != nil </span><span class="cov8" title="1">{
+                return config.Config{}, err
+        }</span>
+
+        <span class="cov8" title="1">params := mapMap(m, "params")
+        cfg := config.Config{
+                Title:   mapStr(m, "title"),
+                BaseURL: firstNonEmpty(mapStr(m, "baseURL"), mapStr(m, "baseUrl")),
+                Description: firstNonEmpty(
+                        mapStr(params, "description"),
+                        mapStr(m, "description"),
+                ),
+        }
+        cfg.Author.Name = mapStr(params, "author")
+        cfg.Author.Email = mapStr(params, "email")
+        cfg.Author.GitHub = firstNonEmpty(mapStr(params, "github"), mapStr(params, "githubUsername"))
+        cfg.Author.Twitter = firstNonEmpty(mapStr(params, "twitter"), mapStr(params, "twitterUsername"))
+        cfg.Author.LinkedIn = mapStr(params, "linkedin")
+        return cfg, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package migrate
+
+import (
+        "bytes"
+        "fmt"
+        "io/fs"
+        "os"
+        "path/filepath"
+        "strings"
+        "time"
+
+        "gopkg.in/yaml.v3"
+        "nemi/internal/config"
+)
+
+// Jekyll migrates a Jekyll site at src into a new Nemi site at dst.
+func Jekyll(src, dst string) (*Result, error) <span class="cov8" title="1">{
+        if _, err := os.Stat(dst); err == nil </span><span class="cov8" title="1">{
+                return nil, fmt.Errorf("destination %q already exists", dst)
+        }</span>
+        <span class="cov8" title="1">if err := os.MkdirAll(dst, 0755); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">r := &amp;Result{}
+
+        cfg, err := loadJekyllConfig(src)
+        if err != nil </span><span class="cov8" title="1">{
+                r.warn("could not read Jekyll config: " + err.Error())
+        }</span>
+        <span class="cov8" title="1">if err := writeNemiToml(dst, cfg); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        // _posts/ → content/blog/
+        <span class="cov8" title="1">postsDir := filepath.Join(src, "_posts")
+        if _, err := os.Stat(postsDir); err == nil </span><span class="cov8" title="1">{
+                if err := migrateJekyllPosts(postsDir, filepath.Join(dst, "content", "blog"), r); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+        }
+
+        // _pages/ → content/
+        <span class="cov8" title="1">pagesDir := filepath.Join(src, "_pages")
+        if _, err := os.Stat(pagesDir); err == nil </span><span class="cov8" title="1">{
+                if err := migrateJekyllPages(pagesDir, filepath.Join(dst, "content"), r); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+        }
+
+        // root .md files → content/
+        <span class="cov8" title="1">if err := migrateJekyllRootPages(src, filepath.Join(dst, "content"), r); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        // assets directories → static/&lt;dir&gt;
+        <span class="cov8" title="1">for _, dir := range []string{"assets", "images", "files", "static"} </span><span class="cov8" title="1">{
+                assetSrc := filepath.Join(src, dir)
+                if _, err := os.Stat(assetSrc); err == nil </span><span class="cov8" title="1">{
+                        n, err := copyDir(assetSrc, filepath.Join(dst, "static", dir))
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, err
+                        }</span>
+                        <span class="cov8" title="1">r.Static += n</span>
+                }
+        }
+
+        <span class="cov8" title="1">return r, nil</span>
+}
+
+func migrateJekyllPosts(src, dst string, r *Result) error <span class="cov8" title="1">{
+        return filepath.WalkDir(src, func(path string, d fs.DirEntry, err error) error </span><span class="cov8" title="1">{
+                if err != nil || d.IsDir() || !strings.HasSuffix(path, ".md") </span><span class="cov8" title="1">{
+                        return err
+                }</span>
+
+                <span class="cov8" title="1">base := strings.TrimSuffix(filepath.Base(path), ".md")
+                dateStr, slug := extractPostSlug(base)
+
+                data, err := os.ReadFile(path)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov8" title="1">fm, body, parseErr := parseJekyllFrontmatter(data)
+                if parseErr != nil </span><span class="cov0" title="0">{
+                        r.warn(fmt.Sprintf("_posts/%s.md: frontmatter parse error: %v", base, parseErr))
+                }</span>
+
+                <span class="cov8" title="1">date := fm.Date
+                if date.IsZero() &amp;&amp; dateStr != "" </span><span class="cov8" title="1">{
+                        date, _ = time.Parse("2006-01-02", dateStr)
+                }</span>
+
+                <span class="cov8" title="1">draft := fm.Draft
+                if fm.Published != nil &amp;&amp; !*fm.Published </span><span class="cov8" title="1">{
+                        draft = true
+                }</span>
+
+                <span class="cov8" title="1">tags := fm.Tags
+                if len(tags) == 0 &amp;&amp; len(fm.Categories) &gt; 0 </span><span class="cov8" title="1">{
+                        tags = fm.Categories
+                }</span>
+
+                <span class="cov8" title="1">desc := firstNonEmpty(fm.Description, fm.Excerpt)
+
+                if fm.Permalink != "" </span><span class="cov8" title="1">{
+                        r.warn(fmt.Sprintf("_posts/%s.md: permalink %q ignored", slug, fm.Permalink))
+                }</span>
+                <span class="cov8" title="1">if hasLiquid(body) </span><span class="cov8" title="1">{
+                        r.warn(fmt.Sprintf("_posts/%s.md: contains Liquid tags — review manually", slug))
+                }</span>
+
+                <span class="cov8" title="1">nemiFm := nemiFM{
+                        Title:       fm.Title,
+                        Date:        fmFromTime(date),
+                        Draft:       draft,
+                        Tags:        tags,
+                        Description: desc,
+                }
+                if err := writePage(filepath.Join(dst, slug+".md"), nemiFm, body); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov8" title="1">r.Pages++
+                return nil</span>
+        })
+}
+
+func migrateJekyllPages(src, dst string, r *Result) error <span class="cov8" title="1">{
+        return filepath.WalkDir(src, func(path string, d fs.DirEntry, err error) error </span><span class="cov8" title="1">{
+                if err != nil || d.IsDir() || !strings.HasSuffix(path, ".md") </span><span class="cov8" title="1">{
+                        return err
+                }</span>
+                <span class="cov8" title="1">rel, _ := filepath.Rel(src, path)
+                data, err := os.ReadFile(path)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov8" title="1">fm, body, _ := parseJekyllFrontmatter(data)
+                if hasLiquid(body) </span><span class="cov8" title="1">{
+                        r.warn(fmt.Sprintf("%s: contains Liquid tags — review manually", rel))
+                }</span>
+                <span class="cov8" title="1">nemiFm := nemiFM{
+                        Title:       fm.Title,
+                        Date:        fmFromTime(fm.Date),
+                        Draft:       fm.Draft,
+                        Tags:        fm.Tags,
+                        Description: firstNonEmpty(fm.Description, fm.Excerpt),
+                }
+                if err := writePage(filepath.Join(dst, rel), nemiFm, body); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov8" title="1">r.Pages++
+                return nil</span>
+        })
+}
+
+var skipRootFiles = map[string]bool{
+        "README.md": true, "README": true,
+        "LICENSE": true, "LICENSE.md": true, "CHANGELOG.md": true,
+        "Gemfile": true, "Gemfile.lock": true,
+}
+
+func migrateJekyllRootPages(src, dst string, r *Result) error <span class="cov8" title="1">{
+        entries, err := os.ReadDir(src)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">for _, e := range entries </span><span class="cov8" title="1">{
+                name := e.Name()
+                if e.IsDir() || !strings.HasSuffix(name, ".md") </span><span class="cov8" title="1">{
+                        continue</span>
+                }
+                <span class="cov8" title="1">if strings.HasPrefix(name, "_") || strings.HasPrefix(name, ".") || skipRootFiles[name] </span><span class="cov8" title="1">{
+                        continue</span>
+                }
+                <span class="cov8" title="1">data, err := os.ReadFile(filepath.Join(src, name))
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov8" title="1">fm, body, _ := parseJekyllFrontmatter(data)
+                if hasLiquid(body) </span><span class="cov8" title="1">{
+                        r.warn(fmt.Sprintf("%s: contains Liquid tags — review manually", name))
+                }</span>
+                <span class="cov8" title="1">nemiFm := nemiFM{
+                        Title:       fm.Title,
+                        Date:        fmFromTime(fm.Date),
+                        Draft:       fm.Draft,
+                        Tags:        fm.Tags,
+                        Description: firstNonEmpty(fm.Description, fm.Excerpt),
+                }
+                if err := writePage(filepath.Join(dst, name), nemiFm, body); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov8" title="1">r.Pages++</span>
+        }
+        <span class="cov8" title="1">return nil</span>
+}
+
+type jekyllFM struct {
+        Title       string    `yaml:"title"`
+        Date        time.Time `yaml:"date"`
+        Draft       bool      `yaml:"draft"`
+        Tags        []string  `yaml:"tags"`
+        Categories  []string  `yaml:"categories"`
+        Description string    `yaml:"description"`
+        Excerpt     string    `yaml:"excerpt"`
+        Published   *bool     `yaml:"published"`
+        Permalink   string    `yaml:"permalink"`
+}
+
+func parseJekyllFrontmatter(data []byte) (jekyllFM, []byte, error) <span class="cov8" title="1">{
+        var fm jekyllFM
+        if !bytes.HasPrefix(data, []byte("---\n")) </span><span class="cov8" title="1">{
+                return fm, data, nil
+        }</span>
+        <span class="cov8" title="1">rest := data[4:]
+        idx := bytes.Index(rest, []byte("\n---"))
+        if idx == -1 </span><span class="cov8" title="1">{
+                return fm, data, nil
+        }</span>
+        <span class="cov8" title="1">end := idx + 4
+        if end &lt; len(rest) &amp;&amp; rest[end] == '\n' </span><span class="cov8" title="1">{
+                end++
+        }</span>
+        <span class="cov8" title="1">err := yaml.Unmarshal(rest[:idx], &amp;fm)
+        return fm, rest[end:], err</span>
+}
+
+func loadJekyllConfig(src string) (config.Config, error) <span class="cov8" title="1">{
+        for _, name := range []string{"_config.yml", "_config.yaml"} </span><span class="cov8" title="1">{
+                data, err := os.ReadFile(filepath.Join(src, name))
+                if err != nil </span><span class="cov8" title="1">{
+                        continue</span>
+                }
+                <span class="cov8" title="1">var m map[string]any
+                if err := yaml.Unmarshal(data, &amp;m); err != nil </span><span class="cov0" title="0">{
+                        return config.Config{}, err
+                }</span>
+
+                <span class="cov8" title="1">cfg := config.Config{Title: mapStr(m, "title"), Description: mapStr(m, "description")}
+
+                // Jekyll: full URL = url + baseurl
+                base := mapStr(m, "url")
+                if sub := mapStr(m, "baseurl"); sub != "" &amp;&amp; sub != "/" </span><span class="cov8" title="1">{
+                        base += sub
+                }</span>
+                <span class="cov8" title="1">cfg.BaseURL = base
+
+                switch v := m["author"].(type) </span>{
+                case string:<span class="cov8" title="1">
+                        cfg.Author.Name = v</span>
+                case map[string]any:<span class="cov8" title="1">
+                        cfg.Author.Name = mapStr(v, "name")
+                        cfg.Author.Email = mapStr(v, "email")
+                        cfg.Author.GitHub = mapStr(v, "github")
+                        cfg.Author.Twitter = mapStr(v, "twitter")
+                        cfg.Author.LinkedIn = mapStr(v, "linkedin")</span>
+                }
+                <span class="cov8" title="1">if cfg.Author.GitHub == "" </span><span class="cov8" title="1">{
+                        cfg.Author.GitHub = mapStr(m, "github_username")
+                }</span>
+                <span class="cov8" title="1">if cfg.Author.Twitter == "" </span><span class="cov8" title="1">{
+                        cfg.Author.Twitter = mapStr(m, "twitter_username")
+                }</span>
+
+                <span class="cov8" title="1">return cfg, nil</span>
+        }
+        <span class="cov8" title="1">return config.Config{}, fmt.Errorf("no Jekyll config file found")</span>
+}
+
+// extractPostSlug parses Jekyll's "YYYY-MM-DD-slug" filename convention.
+func extractPostSlug(base string) (dateStr, slug string) <span class="cov8" title="1">{
+        if len(base) &gt;= 12 &amp;&amp; base[4] == '-' &amp;&amp; base[7] == '-' &amp;&amp; base[10] == '-' </span><span class="cov8" title="1">{
+                return base[:10], base[11:]
+        }</span>
+        <span class="cov8" title="1">return "", base</span>
+}
+
+func hasLiquid(body []byte) bool <span class="cov8" title="1">{
+        s := string(body)
+        return strings.Contains(s, "{%") || strings.Contains(s, "{{")
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package migrate
+
+import (
+        "fmt"
+        "io"
+        "io/fs"
+        "os"
+        "path/filepath"
+
+        "gopkg.in/yaml.v3"
+        "nemi/internal/config"
+)
+
+// Result summarizes a completed migration.
+type Result struct {
+        Pages    int
+        Static   int
+        Warnings []string
+}
+
+func (r *Result) warn(msg string) <span class="cov8" title="1">{
+        r.Warnings = append(r.Warnings, msg)
+}</span>
+
+// nemiFM is the normalized frontmatter written to every migrated page.
+type nemiFM struct {
+        Title       string   `yaml:"title,omitempty"`
+        Date        string   `yaml:"date,omitempty"`
+        Draft       bool     `yaml:"draft,omitempty"`
+        Tags        []string `yaml:"tags,omitempty"`
+        Description string   `yaml:"description,omitempty"`
+}
+
+func writePage(path string, fm nemiFM, body []byte) error <span class="cov8" title="1">{
+        if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">f, err := os.Create(path)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">defer f.Close()
+        fmt.Fprintln(f, "---")
+        enc := yaml.NewEncoder(f)
+        enc.SetIndent(2)
+        if err := enc.Encode(fm); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">fmt.Fprint(f, "---\n")
+        _, err = f.Write(body)
+        return err</span>
+}
+
+func writeNemiToml(dst string, cfg config.Config) error <span class="cov8" title="1">{
+        f, err := os.Create(filepath.Join(dst, "nemi.toml"))
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+        <span class="cov8" title="1">defer f.Close()
+        w := func(format string, args ...any) </span><span class="cov8" title="1">{ fmt.Fprintf(f, format, args...) }</span>
+        <span class="cov8" title="1">w("title       = %q\n", cfg.Title)
+        w("baseURL     = %q\n", cfg.BaseURL)
+        w("description = %q\n\n", cfg.Description)
+        w("[author]\n")
+        if cfg.Author.Name != "" </span><span class="cov8" title="1">{
+                w("name     = %q\n", cfg.Author.Name)
+        }</span>
+        <span class="cov8" title="1">if cfg.Author.Email != "" </span><span class="cov8" title="1">{
+                w("email    = %q\n", cfg.Author.Email)
+        }</span>
+        <span class="cov8" title="1">if cfg.Author.GitHub != "" </span><span class="cov8" title="1">{
+                w("github   = %q\n", cfg.Author.GitHub)
+        }</span>
+        <span class="cov8" title="1">if cfg.Author.Twitter != "" </span><span class="cov8" title="1">{
+                w("twitter  = %q\n", cfg.Author.Twitter)
+        }</span>
+        <span class="cov8" title="1">if cfg.Author.LinkedIn != "" </span><span class="cov8" title="1">{
+                w("linkedin = %q\n", cfg.Author.LinkedIn)
+        }</span>
+        <span class="cov8" title="1">w("\n[pages]\n")
+        w("about   = true\n")
+        w("blog    = true\n")
+        w("contact = true\n")
+        return nil</span>
+}
+
+func copyDir(src, dst string) (int, error) <span class="cov8" title="1">{
+        count := 0
+        err := filepath.WalkDir(src, func(path string, d fs.DirEntry, err error) error </span><span class="cov8" title="1">{
+                if err != nil </span><span class="cov8" title="1">{
+                        return nil
+                }</span>
+                <span class="cov8" title="1">rel, _ := filepath.Rel(src, path)
+                target := filepath.Join(dst, rel)
+                if d.IsDir() </span><span class="cov8" title="1">{
+                        return os.MkdirAll(target, 0755)
+                }</span>
+                <span class="cov8" title="1">if err := copyFile(path, target); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov8" title="1">count++
+                return nil</span>
+        })
+        <span class="cov8" title="1">return count, err</span>
+}
+
+func copyFile(src, dst string) error <span class="cov8" title="1">{
+        if err := os.MkdirAll(filepath.Dir(dst), 0755); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">r, err := os.Open(src)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+        <span class="cov8" title="1">defer r.Close()
+        w, err := os.Create(dst)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">defer w.Close()
+        _, err = io.Copy(w, r)
+        return err</span>
+}
+
+func mapStr(m map[string]any, key string) string <span class="cov8" title="1">{
+        if m == nil </span><span class="cov8" title="1">{
+                return ""
+        }</span>
+        <span class="cov8" title="1">s, _ := m[key].(string)
+        return s</span>
+}
+
+func mapMap(m map[string]any, key string) map[string]any <span class="cov8" title="1">{
+        if m == nil </span><span class="cov8" title="1">{
+                return nil
+        }</span>
+        <span class="cov8" title="1">mm, _ := m[key].(map[string]any)
+        return mm</span>
+}
+
+func firstNonEmpty(vals ...string) string <span class="cov8" title="1">{
+        for _, v := range vals </span><span class="cov8" title="1">{
+                if v != "" </span><span class="cov8" title="1">{
+                        return v
+                }</span>
+        }
+        <span class="cov8" title="1">return ""</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package renderer
+
+import (
+        "bytes"
+        "fmt"
+        "html/template"
+        "os"
+        "path/filepath"
+        "sort"
+        "strings"
+
+        "nemi/internal/content"
+)
+
+type TemplateData struct {
+        Site      content.Site
+        Page      content.Page
+        ServeMode bool
+}
+
+type Renderer struct {
+        layoutsDir string
+        outputDir  string
+        serveMode  bool
+}
+
+func New(layoutsDir, outputDir string, serveMode bool) *Renderer <span class="cov8" title="1">{
+        return &amp;Renderer{
+                layoutsDir: layoutsDir,
+                outputDir:  outputDir,
+                serveMode:  serveMode,
+        }
+}</span>
+
+func (r *Renderer) Render(site content.Site) error <span class="cov8" title="1">{
+        if err := os.MkdirAll(r.outputDir, 0755); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // Group non-index pages by section
+        <span class="cov8" title="1">sectionPages := map[string][]content.Page{}
+        hasIndex := map[string]bool{}
+
+        for _, p := range site.Pages </span><span class="cov8" title="1">{
+                if p.IsSection </span><span class="cov8" title="1">{
+                        hasIndex[p.Section] = true
+                }</span> else<span class="cov8" title="1"> {
+                        sectionPages[p.Section] = append(sectionPages[p.Section], p)
+                }</span>
+        }
+
+        // Render explicit pages; populate .Pages for section list pages
+        <span class="cov8" title="1">for _, page := range site.Pages </span><span class="cov8" title="1">{
+                if page.IsSection </span><span class="cov8" title="1">{
+                        page.Pages = sortByDate(sectionPages[page.Section])
+                }</span>
+                <span class="cov8" title="1">if err := r.renderPage(site, page); err != nil </span><span class="cov8" title="1">{
+                        return err
+                }</span>
+        }
+
+        // Auto-generate list pages for sections with no _index.md
+        <span class="cov8" title="1">for section, pages := range sectionPages </span><span class="cov8" title="1">{
+                if section == "" || hasIndex[section] </span><span class="cov8" title="1">{
+                        continue</span>
+                }
+                <span class="cov8" title="1">list := content.Page{
+                        Title:     capitalize(section),
+                        URL:       "/" + section + "/",
+                        Slug:      section,
+                        Section:   section,
+                        IsSection: true,
+                        Pages:     sortByDate(pages),
+                        Layout:    section + "-list",
+                }
+                if err := r.renderPage(site, list); err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (r *Renderer) renderPage(site content.Site, page content.Page) error <span class="cov8" title="1">{
+        tmpl, err := r.loadTemplate(page.Layout)
+        if err != nil </span><span class="cov8" title="1">{
+                return fmt.Errorf("layout %q: %w", page.Layout, err)
+        }</span>
+
+        <span class="cov8" title="1">var buf bytes.Buffer
+        data := TemplateData{Site: site, Page: page, ServeMode: r.serveMode}
+        if err := tmpl.ExecuteTemplate(&amp;buf, "base", data); err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("render %q: %w", page.URL, err)
+        }</span>
+
+        <span class="cov8" title="1">outPath := r.outputPath(page.Slug)
+        if err := os.MkdirAll(filepath.Dir(outPath), 0755); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">return os.WriteFile(outPath, buf.Bytes(), 0644)</span>
+}
+
+func (r *Renderer) loadTemplate(layout string) (*template.Template, error) <span class="cov8" title="1">{
+        baseContent, err := r.templateContent("base.html")
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">layoutContent, err := r.templateContent(layout + ".html")
+        if err != nil </span><span class="cov8" title="1">{
+                fallback := "single.html"
+                if strings.HasSuffix(layout, "-list") </span><span class="cov8" title="1">{
+                        fallback = "list.html"
+                }</span>
+                <span class="cov8" title="1">layoutContent, err = r.templateContent(fallback)
+                if err != nil </span><span class="cov8" title="1">{
+                        return nil, err
+                }</span>
+        }
+
+        <span class="cov8" title="1">tmpl := template.New("base").Funcs(template.FuncMap{
+                "not": func(v bool) bool </span><span class="cov0" title="0">{ return !v }</span>,
+        })
+        <span class="cov8" title="1">if _, err := tmpl.Parse(baseContent); err != nil </span><span class="cov8" title="1">{
+                return nil, fmt.Errorf("parse base.html: %w", err)
+        }</span>
+        <span class="cov8" title="1">if _, err := tmpl.New(layout + ".html").Parse(layoutContent); err != nil </span><span class="cov8" title="1">{
+                return nil, fmt.Errorf("parse %s.html: %w", layout, err)
+        }</span>
+        <span class="cov8" title="1">return tmpl, nil</span>
+}
+
+func (r *Renderer) templateContent(name string) (string, error) <span class="cov8" title="1">{
+        data, err := os.ReadFile(filepath.Join(r.layoutsDir, name))
+        if err != nil </span><span class="cov8" title="1">{
+                return "", fmt.Errorf("layout %q not found in %s/", name, r.layoutsDir)
+        }</span>
+        <span class="cov8" title="1">return string(data), nil</span>
+}
+
+func (r *Renderer) outputPath(slug string) string <span class="cov8" title="1">{
+        if slug == "" </span><span class="cov8" title="1">{
+                return filepath.Join(r.outputDir, "index.html")
+        }</span>
+        <span class="cov8" title="1">if slug == "404" </span><span class="cov8" title="1">{
+                return filepath.Join(r.outputDir, "404.html")
+        }</span>
+        <span class="cov8" title="1">return filepath.Join(r.outputDir, filepath.FromSlash(slug), "index.html")</span>
+}
+
+func sortByDate(pages []content.Page) []content.Page <span class="cov8" title="1">{
+        out := make([]content.Page, len(pages))
+        copy(out, pages)
+        sort.Slice(out, func(i, j int) bool </span><span class="cov8" title="1">{
+                return out[i].Date.After(out[j].Date)
+        }</span>)
+        <span class="cov8" title="1">return out</span>
+}
+
+func capitalize(s string) string <span class="cov8" title="1">{
+        if s == "" </span><span class="cov8" title="1">{
+                return s
+        }</span>
+        <span class="cov8" title="1">return strings.ToUpper(s[:1]) + s[1:]</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

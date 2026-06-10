@@ -1,0 +1,29 @@
+# Structured résumé/CV — rendered by layouts/resume.html on the /resume/ page.
+# Edit freely; any empty section is simply skipped.
+
+# Optional: link to a downloadable PDF (drop the file in static/).
+# pdf: /resume.pdf
+
+experience:
+  - role: Senior Engineer
+    org: Company Name
+    period: 2022 – Present
+    summary: What you owned, built, and learned in this role.
+    highlights:
+      - Led the redesign of X, cutting load time by 40%.
+      - Mentored 3 engineers and ran the hiring loop.
+  - role: Engineer
+    org: Previous Company
+    period: 2019 – 2022
+    summary: Another role, another set of wins.
+
+education:
+  - degree: B.S. Computer Science
+    org: University Name
+    period: 2015 – 2019
+
+skills:
+  - group: Languages
+    items: [Go, TypeScript, Python, SQL]
+  - group: Tools
+    items: [Docker, PostgreSQL, AWS, Git]

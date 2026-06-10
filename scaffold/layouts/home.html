@@ -1,0 +1,68 @@
+{{define "content"}}
+<section class="hero">
+  <h1>{{.Site.Config.Author.Name}}</h1>
+  {{with .Site.Config.Author.Tagline}}<p class="tagline">{{.}}</p>{{end}}
+  {{with .Site.Config.Author.Bio}}<p class="bio">{{.}}</p>{{end}}
+  <div class="links">
+    {{with .Site.Config.Author.GitHub}}<a href="https://github.com/{{.}}">GitHub</a>{{end}}
+    {{with .Site.Config.Author.Twitter}}<a href="https://twitter.com/{{.}}">Twitter</a>{{end}}
+    {{with .Site.Config.Author.LinkedIn}}<a href="https://linkedin.com/in/{{.}}">LinkedIn</a>{{end}}
+    {{with .Site.Config.Author.Email}}<a href="mailto:{{.}}">Email</a>{{end}}
+  </div>
+  {{if .Page.Content}}<div class="prose">{{.Page.Content}}</div>{{end}}
+</section>
+
+{{$updates := where (where .Site.Pages "Section" "updates") "IsSection" false}}
+{{if $updates}}
+<section class="home-section">
+  <h2>Latest</h2>
+  <ul class="news-list">
+    {{range first 4 (sortByDate $updates)}}
+    <li>
+      {{if not .Date.IsZero}}<time>{{.Date.Format "Jan 2, 2006"}}</time>{{end}}
+      <div class="news-body">
+        <a href="{{.URL}}">{{.Title}}</a>
+        {{with .Summary}}<p>{{.}}</p>{{end}}
+      </div>
+    </li>
+    {{end}}
+  </ul>
+  <a class="more-link" href="/updates/">→ All updates</a>
+</section>
+{{end}}
+
+{{$posts := where (where .Site.Pages "Section" "blog") "IsSection" false}}
+{{if $posts}}
+<section class="home-section">
+  <h2>Writing</h2>
+  <ul class="post-list">
+    {{range first 5 (sortByDate $posts)}}
+    <li>
+      <a href="{{.URL}}">{{.Title}}</a>
+      {{if not .Date.IsZero}}<time>{{.Date.Format "Jan 2006"}}</time>{{end}}
+    </li>
+    {{end}}
+  </ul>
+  <a class="more-link" href="/blog/">→ All posts</a>
+</section>
+{{end}}
+
+{{$projects := where (where .Site.Pages "Section" "projects") "IsSection" false}}
+{{if $projects}}
+<section class="home-section">
+  <h2>Projects</h2>
+  {{range sortByDate $projects}}{{template "project-card" .}}{{end}}
+  <a class="more-link" href="/projects/">→ All projects</a>
+</section>
+{{end}}
+
+<section class="home-section">
+  <h2>Elsewhere</h2>
+  <div class="elsewhere">
+    {{if .Site.Config.Pages.Now}}<a href="/now/">Now</a>{{end}}
+    {{if .Site.Config.Pages.Uses}}<a href="/uses/">Uses</a>{{end}}
+    {{if .Site.Config.Pages.Resume}}<a href="/resume/">Résumé</a>{{end}}
+    {{if .Site.Config.Pages.Contact}}<a href="/contact/">Contact</a>{{end}}
+  </div>
+</section>
+{{end}}

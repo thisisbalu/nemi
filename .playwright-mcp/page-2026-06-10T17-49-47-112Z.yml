@@ -1,0 +1,59 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Your Name" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e5]:
+        - link "About" [ref=e6] [cursor=pointer]:
+          - /url: /about/
+        - link "Blog" [ref=e7] [cursor=pointer]:
+          - /url: /blog/
+        - link "Projects" [ref=e8] [cursor=pointer]:
+          - /url: /projects/
+        - link "Contact" [ref=e9] [cursor=pointer]:
+          - /url: /contact/
+        - button "Toggle light/dark theme" [ref=e10] [cursor=pointer]: ◐
+  - generic [ref=e11]:
+    - main [ref=e12]:
+      - article [ref=e13]:
+        - heading "Résumé" [level=1] [ref=e15]
+        - paragraph [ref=e17]:
+          - text: A short intro line — who you are and what you’re looking for. The experience, education, and skills below are pulled from
+          - code [ref=e18]: data/cv.yaml
+          - text: ", so you edit them in one structured place instead of hand-formatting Markdown."
+        - generic [ref=e19]:
+          - heading "Experience" [level=2] [ref=e20]
+          - generic [ref=e21]:
+            - generic [ref=e22]:
+              - heading "Senior Engineer · Company Name" [level=3] [ref=e23]
+              - generic [ref=e24]: 2022 – Present
+            - paragraph [ref=e25]: What you owned, built, and learned in this role.
+            - list [ref=e26]:
+              - listitem [ref=e27]: Led the redesign of X, cutting load time by 40%.
+              - listitem [ref=e28]: Mentored 3 engineers and ran the hiring loop.
+          - generic [ref=e29]:
+            - generic [ref=e30]:
+              - heading "Engineer · Previous Company" [level=3] [ref=e31]
+              - generic [ref=e32]: 2019 – 2022
+            - paragraph [ref=e33]: Another role, another set of wins.
+        - generic [ref=e34]:
+          - heading "Education" [level=2] [ref=e35]
+          - generic [ref=e37]:
+            - heading "B.S. Computer Science · University Name" [level=3] [ref=e38]
+            - generic [ref=e39]: 2015 – 2019
+        - generic [ref=e40]:
+          - heading "Skills" [level=2] [ref=e41]
+          - generic [ref=e42]:
+            - term [ref=e43]: Languages
+            - definition [ref=e44]: Go · TypeScript · Python · SQL
+            - term [ref=e45]: Tools
+            - definition [ref=e46]: Docker · PostgreSQL · AWS · Git
+    - contentinfo [ref=e47]:
+      - paragraph [ref=e48]:
+        - text: © 2026 Your Name ·
+        - link "GitHub" [ref=e49] [cursor=pointer]:
+          - /url: https://github.com/yourusername
+        - text: ·
+        - link "Twitter" [ref=e50] [cursor=pointer]:
+          - /url: https://twitter.com/yourusername
+  - button "Back to top": ↑

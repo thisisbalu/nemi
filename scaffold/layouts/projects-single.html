@@ -1,0 +1,12 @@
+{{define "content"}}
+<div class="post-layout">
+  <article>
+    <a class="back-link" href="/projects/">← Projects</a>
+    <h1>{{.Page.Title}}</h1>
+    <p class="post-meta">{{range $i, $t := .Page.Tech}}{{if $i}} · {{end}}{{$t}}{{end}}{{with .Page.GitHub}} · <a href="https://github.com/{{.}}">GitHub ↗</a>{{end}}{{with .Page.Live}} · <a href="{{.}}">Live ↗</a>{{end}}</p>
+    {{if .Page.TOC}}<div class="toc-inline">{{.Page.TOC}}</div>{{end}}
+    <div class="prose">{{.Page.Content}}</div>
+  </article>
+  {{if .Page.TOC}}<aside class="toc-rail"><p class="toc-label">On this page</p>{{.Page.TOC}}</aside>{{end}}
+</div>
+{{end}}

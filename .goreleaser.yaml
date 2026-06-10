@@ -1,0 +1,63 @@
+# GoReleaser config — cross-compiles release binaries, publishes a GitHub
+# Release, and bumps the Homebrew formula. Run locally with:
+#   goreleaser release --snapshot --clean   (dry run, no publish)
+# CI runs `goreleaser release --clean` on every `vX.Y.Z` tag push.
+version: 2
+
+project_name: nemi
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: nemi
+    main: .
+    binary: nemi
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X github.com/thisisbalu/nemi/cmd.version={{ .Version }}
+
+archives:
+  - id: nemi
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "Merge pull request"
+
+brews:
+  - name: nemi
+    repository:
+      owner: thisisbalu
+      name: homebrew-tap
+      # A PAT with write access to the tap repo (the default GITHUB_TOKEN can
+      # only write to this repo, not the separate tap). Set as a CI secret.
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: "https://github.com/thisisbalu/nemi"
+    description: "A fast, zero-config static site generator that builds beautiful sites out of the box."
+    license: "MIT"
+    install: |
+      bin.install "nemi"
+    test: |
+      system "#{bin}/nemi", "version"

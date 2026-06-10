@@ -1,0 +1,94 @@
+<script>
+(function () {
+  // Scroll progress bar
+  var bar = document.querySelector('.scroll-progress');
+
+  // Home: hero name collapses into the sticky header
+  var hero = document.querySelector('.hero h1'), hdr = document.querySelector('.site-header');
+  if (hero && hdr) {
+    new IntersectionObserver(function (e) {
+      hdr.classList.toggle('scrolled', !e[0].isIntersecting);
+    }, { rootMargin: '-50px 0px 0px 0px' }).observe(hero);
+  }
+
+  // Scroll-spy: highlight the TOC entry for the section you're reading
+  var heads = [].slice.call(document.querySelectorAll('.prose h2[id], .prose h3[id]'));
+  var tocLinks = {};
+  document.querySelectorAll('.toc a').forEach(function (a) {
+    var id = decodeURIComponent((a.getAttribute('href') || '').slice(1));
+    if (id) (tocLinks[id] = tocLinks[id] || []).push(a);
+  });
+
+  // Code copy buttons
+  document.querySelectorAll('.prose pre').forEach(function (pre) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', function () {
+      var code = pre.querySelector('code');
+      var text = code ? code.innerText : pre.innerText;
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+  // Heading anchor links (hover to reveal)
+  document.querySelectorAll('.prose h2[id], .prose h3[id]').forEach(function (h) {
+    var a = document.createElement('a');
+    a.className = 'heading-anchor';
+    a.href = '#' + h.id;
+    a.setAttribute('aria-label', 'Link to this section');
+    a.textContent = '#';
+    h.appendChild(a);
+  });
+
+  // Back-to-top
+  var top = document.querySelector('.to-top');
+  if (top) top.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  // Image lightbox / zoom
+  document.querySelectorAll('.prose img').forEach(function (img) {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', function () {
+      var ov = document.createElement('div');
+      ov.className = 'lightbox';
+      var big = document.createElement('img');
+      big.src = img.currentSrc || img.src;
+      ov.appendChild(big);
+      document.body.appendChild(ov);
+      document.body.style.overflow = 'hidden';
+      function close() {
+        ov.remove();
+        document.body.style.overflow = '';
+        document.removeEventListener('keydown', onKey);
+      }
+      ov.addEventListener('click', close);
+      function onKey(e) { if (e.key === 'Escape') close(); }
+      document.addEventListener('keydown', onKey);
+    });
+  });
+
+  function onScroll() {
+    if (bar) {
+      var d = document.documentElement, m = d.scrollHeight - d.clientHeight;
+      bar.style.transform = 'scaleX(' + (m > 0 ? d.scrollTop / m : 0) + ')';
+    }
+    if (top) top.classList.toggle('show', window.scrollY > 500);
+    if (heads.length) {
+      var cur = null;
+      for (var i = 0; i < heads.length; i++) {
+        if (heads[i].getBoundingClientRect().top <= 120) cur = heads[i].id;
+      }
+      for (var id in tocLinks) tocLinks[id].forEach(function (a) { a.classList.remove('active'); });
+      if (cur && tocLinks[cur]) tocLinks[cur].forEach(function (a) { a.classList.add('active'); });
+    }
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  onScroll();
+})();
+</script>

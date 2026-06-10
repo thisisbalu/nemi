@@ -1,0 +1,14 @@
+# Compiled binary
+/nemi
+
+# GoReleaser output
+/dist/
+
+# Generated site output (never committed — rebuilt on every build)
+/public/
+
+# OS / editor cruft
+.DS_Store
+*.swp
+.idea/
+.vscode/

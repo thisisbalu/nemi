@@ -1,0 +1,54 @@
+{{define "content"}}
+<article class="resume">
+  <div class="resume-head">
+    <h1>{{.Page.Title}}</h1>
+    {{with .Site.Data.cv.pdf}}<a class="resume-download" href="{{.}}">Download PDF →</a>{{end}}
+  </div>
+  {{if .Page.Content}}<div class="prose">{{.Page.Content}}</div>{{end}}
+
+  {{with .Site.Data.cv}}
+    {{with .experience}}
+    <section class="cv-section">
+      <h2>Experience</h2>
+      {{range .}}
+      <div class="cv-entry">
+        <div class="cv-entry-head">
+          <h3>{{.role}}{{with .org}} · <span class="cv-org">{{.}}</span>{{end}}</h3>
+          {{with .period}}<span class="cv-period">{{.}}</span>{{end}}
+        </div>
+        {{with .summary}}<p>{{.}}</p>{{end}}
+        {{with .highlights}}<ul>{{range .}}<li>{{.}}</li>{{end}}</ul>{{end}}
+      </div>
+      {{end}}
+    </section>
+    {{end}}
+
+    {{with .education}}
+    <section class="cv-section">
+      <h2>Education</h2>
+      {{range .}}
+      <div class="cv-entry">
+        <div class="cv-entry-head">
+          <h3>{{.degree}}{{with .org}} · <span class="cv-org">{{.}}</span>{{end}}</h3>
+          {{with .period}}<span class="cv-period">{{.}}</span>{{end}}
+        </div>
+        {{with .summary}}<p>{{.}}</p>{{end}}
+      </div>
+      {{end}}
+    </section>
+    {{end}}
+
+    {{with .skills}}
+    <section class="cv-section">
+      <h2>Skills</h2>
+      <dl class="cv-skills">
+        {{range .}}
+        <dt>{{.group}}</dt>
+        <dd>{{range $i, $s := .items}}{{if $i}} · {{end}}{{$s}}{{end}}</dd>
+        {{end}}
+      </dl>
+    </section>
+    {{end}}
+  {{end}}
+</article>
+{{end}}

@@ -1,0 +1,27 @@
+# Publications (academic) — OFF BY DEFAULT.
+#
+# To enable a publications page:
+#   1. Edit the entries below (grouped by year, newest first).
+#   2. Create content/publications.md  (title in frontmatter is enough — the
+#      "publications" slug resolves to layouts/publications.html automatically).
+#   3. Optionally add a [[menu]] entry in nemi.toml pointing to /publications/.
+#
+# Each paper supports: title, authors, venue, selected (bool), and link
+# buttons url / pdf / code.
+
+- year: 2024
+  papers:
+    - title: A Title That Describes the Work
+      authors: Your Name, A. Coauthor, B. Collaborator
+      venue: Proceedings of Some Conference (ACME '24)
+      selected: true
+      url: https://example.com/paper
+      pdf: /papers/2024-title.pdf
+      code: https://github.com/you/project
+
+- year: 2023
+  papers:
+    - title: An Earlier Result
+      authors: Your Name, C. Advisor
+      venue: Journal of Things, Vol. 12
+      pdf: /papers/2023-earlier.pdf

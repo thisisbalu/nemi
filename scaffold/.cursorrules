@@ -1,0 +1,19 @@
+# Nemi Site
+
+Nemi static site: Markdown + Go templates → plain HTML.
+
+Structure: nemi.toml (TOML config) | content/ (markdown) | layouts/ (templates) | static/ (assets) | public/ (output, never edit)
+
+Frontmatter fields: title, date, draft, tags, description
+URL: content/blog/my-post.md → /blog/my-post/
+Subdirectories → auto list pages
+
+Commands: nemi new <name> | nemi build | nemi serve (localhost:3000) | nemi migrate hugo/jekyll <src>
+
+Rules:
+- public/ is deleted and regenerated on every build — never edit it
+- static/ assets referenced as /filename.ext
+- .Page.Content is template.HTML — output with {{.Page.Content}}
+- nemi.toml is TOML not YAML
+
+Full reference: AGENTS.md
