@@ -9,7 +9,7 @@
       {{if ne .Page.URL "/"}}<a class="site-title" href="/">{{.Site.Config.Title}}</a>{{else}}<a class="site-title" href="/">{{.Site.Config.Author.Name}}</a>{{end}}
       <nav class="site-nav">
         {{range .Site.Config.Menu}}<a href="{{.URL}}"{{if .IsExternal}} target="_blank" rel="noopener"{{end}}>{{.Name}}</a>{{end}}
-        {{if not .Site.Config.Search.Disable}}<button class="search-trigger" type="button" aria-label="Search" data-search-open>⌕</button>{{end}}
+        {{if not .Site.Config.Search.Disable}}<button class="search-trigger" type="button" aria-label="Search" data-search-open><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>{{end}}
         {{template "theme-toggle" .}}
       </nav>
     </div>

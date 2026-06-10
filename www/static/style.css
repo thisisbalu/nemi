@@ -1175,13 +1175,20 @@ section > h1 {
 
 /* ── Search ── */
 .search-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: none;
-    border: none;
+    border: 0;
     color: var(--muted);
     cursor: pointer;
-    font-size: 1.15rem;
-    line-height: 1;
-    padding: 0 0.2rem;
+    padding: 0.25rem;
+    border-radius: 6px;
+}
+.search-trigger svg {
+    width: 16px;
+    height: 16px;
+    display: block;
 }
 .search-trigger:hover {
     color: var(--text);
