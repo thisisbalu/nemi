@@ -1172,3 +1172,101 @@ section > h1 {
     text-align: center;
     line-height: normal;
 }
+
+/* ── Search ── */
+.search-trigger {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1.15rem;
+    line-height: 1;
+    padding: 0 0.2rem;
+}
+.search-trigger:hover {
+    color: var(--text);
+}
+.search-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 12vh 1rem 1rem;
+}
+.search-panel {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    width: min(600px, 100%);
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+.search-input {
+    border: none;
+    border-bottom: 1px solid var(--border);
+    background: none;
+    color: var(--text);
+    font: inherit;
+    font-size: 1.1rem;
+    padding: 1rem 1.2rem;
+    outline: none;
+}
+.search-results {
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem;
+    overflow-y: auto;
+}
+.search-results .sr {
+    display: block;
+    padding: 0.6rem 0.8rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text);
+}
+.search-results .sr.active,
+.search-results .sr:hover {
+    background: var(--inline-bg);
+}
+.sr-title {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.sr-snip {
+    display: block;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-top: 0.15rem;
+}
+.search-results mark {
+    background: none;
+    color: var(--text);
+    font-weight: 600;
+}
+.search-empty {
+    color: var(--muted);
+    margin: 0;
+    padding: 1rem 1.2rem;
+}
+.search-hint {
+    margin: 0;
+    padding: 0.6rem 1.2rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.75rem;
+}
+.search-hint kbd {
+    font-family: inherit;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0 0.3rem;
+    margin: 0 0.1rem;
+}

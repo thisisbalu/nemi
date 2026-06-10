@@ -13,6 +13,7 @@ import (
 	"github.com/thisisbalu/nemi/internal/minify"
 	"github.com/thisisbalu/nemi/internal/ogimage"
 	"github.com/thisisbalu/nemi/internal/renderer"
+	"github.com/thisisbalu/nemi/internal/search"
 	"github.com/thisisbalu/nemi/internal/sitemap"
 )
 
@@ -61,6 +62,14 @@ func Run(serveMode, drafts bool) (Stats, error) {
 
 	if err := writeRobots("public", cfg.BaseURL); err != nil {
 		return stats, err
+	}
+
+	// The search index is cheap to write, so build it in every mode (search
+	// works in `nemi serve` too).
+	if !cfg.Search.Disable {
+		if err := search.Write("public", pages); err != nil {
+			return stats, err
+		}
 	}
 
 	if err := copyStatic("static", "public"); err != nil {

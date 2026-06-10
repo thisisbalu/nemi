@@ -18,6 +18,13 @@ type Config struct {
 	Giscus      Giscus       `toml:"giscus"`
 	Images      ImagesConfig `toml:"images"`
 	OG          OGConfig     `toml:"og"`
+	Search      SearchConfig `toml:"search"`
+}
+
+// SearchConfig controls the built-in client-side search. On by default; set
+// disable = true to drop the index file and the search UI.
+type SearchConfig struct {
+	Disable bool `toml:"disable"`
 }
 
 // OGConfig controls auto-generated Open Graph (social share) card images.

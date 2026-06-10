@@ -1,0 +1,91 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Your Name":
+        - /url: /
+      - navigation [ref=e4]:
+        - link "About" [ref=e5] [cursor=pointer]:
+          - /url: /about/
+        - link "Blog" [ref=e6] [cursor=pointer]:
+          - /url: /blog/
+        - link "Projects" [ref=e7] [cursor=pointer]:
+          - /url: /projects/
+        - link "Contact" [ref=e8] [cursor=pointer]:
+          - /url: /contact/
+        - button "Search" [ref=e9] [cursor=pointer]: ⌕
+        - button "Toggle light/dark theme" [ref=e10] [cursor=pointer]: ◐
+  - generic [ref=e11]:
+    - main [ref=e12]:
+      - generic [ref=e13]:
+        - heading "Your Name" [level=1] [ref=e14]
+        - paragraph [ref=e15]: Developer · Builder · Writer
+        - paragraph [ref=e16]: I build things for the web. Currently focused on developer tools and open-source.
+        - generic [ref=e17]:
+          - link "GitHub" [ref=e18] [cursor=pointer]:
+            - /url: https://github.com/yourusername
+          - link "Twitter" [ref=e19] [cursor=pointer]:
+            - /url: https://twitter.com/yourusername
+          - link "LinkedIn" [ref=e20] [cursor=pointer]:
+            - /url: https://linkedin.com/in/yourusername
+          - link "Email" [ref=e21] [cursor=pointer]:
+            - /url: mailto:you@example.com
+      - generic [ref=e22]:
+        - heading "Latest" [level=2] [ref=e23]
+        - list [ref=e24]:
+          - listitem [ref=e25]:
+            - time [ref=e26]: Jan 1, 2026
+            - generic [ref=e27]:
+              - link "First update" [ref=e28] [cursor=pointer]:
+                - /url: /updates/first-update/
+              - paragraph [ref=e29]: This is the updates feed — a place for short thoughts, links, ideas, and snippets that don&rsquo;t warrant a full blog post.
+        - link "→ All updates" [ref=e30] [cursor=pointer]:
+          - /url: /updates/
+      - generic [ref=e31]:
+        - heading "Writing" [level=2] [ref=e32]
+        - list [ref=e33]:
+          - listitem [ref=e34]:
+            - link "Hello, World" [ref=e35] [cursor=pointer]:
+              - /url: /blog/hello-world/
+            - time [ref=e36]: Jan 2026
+        - link "→ All posts" [ref=e37] [cursor=pointer]:
+          - /url: /blog/
+      - generic [ref=e38]:
+        - heading "Projects" [level=2] [ref=e39]
+        - article [ref=e40]:
+          - heading "Example Project" [level=3] [ref=e41]:
+            - link "Example Project" [ref=e42] [cursor=pointer]:
+              - /url: https://example.com
+          - paragraph [ref=e43]: A short description of what this project does and why you built it.
+          - generic [ref=e44]:
+            - generic [ref=e45]: Go · PostgreSQL · Docker
+            - generic [ref=e46]:
+              - link "GitHub ↗" [ref=e47] [cursor=pointer]:
+                - /url: https://github.com/yourusername/example-project
+              - link "Live ↗" [ref=e48] [cursor=pointer]:
+                - /url: https://example.com
+        - link "→ All projects" [ref=e49] [cursor=pointer]:
+          - /url: /projects/
+      - generic [ref=e50]:
+        - heading "Elsewhere" [level=2] [ref=e51]
+        - generic [ref=e52]:
+          - link "Now" [ref=e53] [cursor=pointer]:
+            - /url: /now/
+          - link "Uses" [ref=e54] [cursor=pointer]:
+            - /url: /uses/
+          - link "Résumé" [ref=e55] [cursor=pointer]:
+            - /url: /resume/
+          - link "Contact" [ref=e56] [cursor=pointer]:
+            - /url: /contact/
+    - contentinfo [ref=e57]:
+      - paragraph [ref=e58]:
+        - text: © 2026 Your Name ·
+        - link "GitHub" [ref=e59] [cursor=pointer]:
+          - /url: https://github.com/yourusername
+        - text: ·
+        - link "Twitter" [ref=e60] [cursor=pointer]:
+          - /url: https://twitter.com/yourusername
+  - button "Back to top": ↑
+  - generic [ref=e62]:
+    - searchbox "Search" [ref=e63]
+    - listbox [ref=e64]
+    - paragraph [ref=e65]: ↑↓ to navigate · ↵ to open · esc to close
