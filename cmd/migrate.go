@@ -10,7 +10,7 @@ import (
 
 var migrateCmd = &cobra.Command{
 	Use:   "migrate",
-	Short: "Migrate a Hugo or Jekyll site to Nemi",
+	Short: "Migrate a Hugo, Jekyll, or raw HTML site to Nemi",
 }
 
 var migrateHugoCmd = &cobra.Command{
@@ -27,9 +27,17 @@ var migrateJekyllCmd = &cobra.Command{
 	RunE:  runMigrateJekyll,
 }
 
+var migrateHTMLCmd = &cobra.Command{
+	Use:   "html <source> [dest]",
+	Short: "Migrate a folder of raw HTML pages to Nemi",
+	Args:  cobra.RangeArgs(1, 2),
+	RunE:  runMigrateHTML,
+}
+
 func init() {
 	migrateCmd.AddCommand(migrateHugoCmd)
 	migrateCmd.AddCommand(migrateJekyllCmd)
+	migrateCmd.AddCommand(migrateHTMLCmd)
 	rootCmd.AddCommand(migrateCmd)
 }
 
@@ -48,6 +56,17 @@ func runMigrateJekyll(_ *cobra.Command, args []string) error {
 	src, dst := migratePaths(args)
 	fmt.Printf("Migrating Jekyll site: %s → %s\n\n", src, dst)
 	result, err := migrate.Jekyll(src, dst)
+	if err != nil {
+		return err
+	}
+	printMigrateResult(result, dst)
+	return nil
+}
+
+func runMigrateHTML(_ *cobra.Command, args []string) error {
+	src, dst := migratePaths(args)
+	fmt.Printf("Migrating HTML pages: %s → %s\n\n", src, dst)
+	result, err := migrate.HTML(src, dst)
 	if err != nil {
 		return err
 	}

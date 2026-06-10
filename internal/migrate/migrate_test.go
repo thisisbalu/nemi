@@ -83,6 +83,92 @@ func TestMergeTags(t *testing.T) {
 	}
 }
 
+// --- HTML migration ---
+
+func TestStripLeadingH1(t *testing.T) {
+	if got := stripLeadingH1("# Title\n\nBody"); got != "Body" {
+		t.Errorf("leading h1 not stripped: %q", got)
+	}
+	if got := stripLeadingH1("Intro\n# Later"); got != "Intro\n# Later" {
+		t.Errorf("non-leading h1 should be kept: %q", got)
+	}
+}
+
+func TestTitleFromDir(t *testing.T) {
+	cases := map[string]string{
+		"my-old-site":  "My Old Site",
+		"/tmp/foo_bar": "Foo Bar",
+		"about.html":   "About",
+	}
+	for in, want := range cases {
+		if got := titleFromDir(in); got != want {
+			t.Errorf("titleFromDir(%q) = %q, want %q", in, got, want)
+		}
+	}
+}
+
+func TestIsRelativeRef(t *testing.T) {
+	for in, want := range map[string]bool{
+		"images/x.png":   true,
+		"./a.png":        true,
+		"/abs.png":       false,
+		"http://x.com":   false,
+		"//cdn/x":        false,
+		"#frag":          false,
+		"mailto:a@b.com": false,
+		"":               false,
+	} {
+		if got := isRelativeRef(in); got != want {
+			t.Errorf("isRelativeRef(%q) = %v, want %v", in, got, want)
+		}
+	}
+}
+
+func TestHTML(t *testing.T) {
+	src := t.TempDir()
+	writeF(t, filepath.Join(src, "index.html"),
+		`<html><head><title>Home</title></head><body><nav>skipnav</nav>`+
+			`<main><h1>Home</h1><p>Hi <b>there</b>.</p><img src="img/a.png" alt="A"></main>`+
+			`<footer>skipfoot</footer></body></html>`)
+	writeF(t, filepath.Join(src, "img", "a.png"), "PNG")
+
+	dst := filepath.Join(t.TempDir(), "out")
+	r, err := HTML(src, dst)
+	if err != nil {
+		t.Fatalf("HTML: %v", err)
+	}
+	if r.Pages != 1 || r.Static != 1 {
+		t.Errorf("counts: pages=%d static=%d, want 1/1", r.Pages, r.Static)
+	}
+
+	md, err := os.ReadFile(filepath.Join(dst, "content", "index.md"))
+	if err != nil {
+		t.Fatalf("read index.md: %v", err)
+	}
+	s := string(md)
+	if !strings.Contains(s, "title: Home") {
+		t.Errorf("missing title frontmatter: %s", s)
+	}
+	if strings.Contains(s, "# Home") {
+		t.Errorf("leading h1 should be stripped (dups title): %s", s)
+	}
+	if !strings.Contains(s, "Hi **there**.") {
+		t.Errorf("body not converted to markdown: %s", s)
+	}
+	if !strings.Contains(s, "/img/a.png") {
+		t.Errorf("image ref not absolutized: %s", s)
+	}
+	if strings.Contains(s, "skipnav") || strings.Contains(s, "skipfoot") {
+		t.Errorf("nav/footer chrome should be dropped: %s", s)
+	}
+	if _, err := os.Stat(filepath.Join(dst, "static", "img", "a.png")); err != nil {
+		t.Error("image not copied to static/")
+	}
+	if _, err := os.Stat(filepath.Join(dst, "layouts", "base.html")); err != nil {
+		t.Error("scaffold theme (layouts/base.html) not copied")
+	}
+}
+
 // --- writePage ---
 
 func TestWritePage(t *testing.T) {

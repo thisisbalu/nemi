@@ -1,0 +1,104 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Nemi" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e5]:
+        - link "Docs" [ref=e6] [cursor=pointer]:
+          - /url: /docs/
+        - link "GitHub" [ref=e7] [cursor=pointer]:
+          - /url: https://github.com/thisisbalu/nemi
+        - button "Search" [ref=e8] [cursor=pointer]:
+          - img [ref=e9]
+        - button "Toggle light/dark theme" [ref=e12] [cursor=pointer]: ◐
+  - generic [ref=e13]:
+    - main [ref=e14]:
+      - generic [ref=e15]:
+        - article [ref=e16]:
+          - link "← Docs" [ref=e17] [cursor=pointer]:
+            - /url: /docs/
+          - heading "Installation" [level=1] [ref=e18]
+          - paragraph [ref=e19]:
+            - time [ref=e20]: February 6, 2026
+            - text: · 1 min read
+          - generic [ref=e21]:
+            - paragraph [ref=e22]: Nemi is a single binary with no runtime dependencies. Pick whichever method suits you.
+            - heading "Homebrew (macOS / Linux) Link to this section" [level=2] [ref=e23]:
+              - text: Homebrew (macOS / Linux)
+              - link "Link to this section" [ref=e24] [cursor=pointer]:
+                - /url: "#homebrew-macos--linux"
+                - text: "#"
+            - generic [ref=e25]:
+              - code [ref=e26]:
+                - generic [ref=e27]: brew install thisisbalu/tap/nemi
+              - button "Copy" [ref=e28] [cursor=pointer]
+            - heading "Install script (macOS / Linux) Link to this section" [level=2] [ref=e29]:
+              - text: Install script (macOS / Linux)
+              - link "Link to this section" [ref=e30] [cursor=pointer]:
+                - /url: "#install-script-macos--linux"
+                - text: "#"
+            - generic [ref=e31]:
+              - code [ref=e32]:
+                - generic [ref=e34]: curl -fsSL https://raw.githubusercontent.com/thisisbalu/nemi/main/install.sh | sh
+              - button "Copy" [ref=e35] [cursor=pointer]
+            - paragraph [ref=e36]:
+              - text: Set
+              - code [ref=e37]: INSTALL_DIR
+              - text: to choose where the binary lands (defaults to
+              - code [ref=e38]: /usr/local/bin
+              - text: ).
+            - heading "go install Link to this section" [level=2] [ref=e39]:
+              - text: go install
+              - link "Link to this section" [ref=e40] [cursor=pointer]:
+                - /url: "#go-install"
+                - text: "#"
+            - generic [ref=e41]:
+              - code [ref=e42]:
+                - generic [ref=e43]: go install github.com/thisisbalu/nemi@latest
+              - button "Copy" [ref=e44] [cursor=pointer]
+            - heading "Prebuilt binaries Link to this section" [level=2] [ref=e45]:
+              - text: Prebuilt binaries
+              - link "Link to this section" [ref=e46] [cursor=pointer]:
+                - /url: "#prebuilt-binaries"
+                - text: "#"
+            - paragraph [ref=e47]:
+              - text: Download a binary for macOS, Linux, or Windows from the
+              - link "Releases" [ref=e48] [cursor=pointer]:
+                - /url: https://github.com/thisisbalu/nemi/releases
+              - text: page and put it on your
+              - code [ref=e49]: PATH
+              - text: .
+            - heading "Verify Link to this section" [level=2] [ref=e50]:
+              - text: Verify
+              - link "Link to this section" [ref=e51] [cursor=pointer]:
+                - /url: "#verify"
+                - text: "#"
+            - generic [ref=e52]:
+              - code [ref=e53]:
+                - generic [ref=e54]: nemi version
+              - button "Copy" [ref=e55] [cursor=pointer]
+        - complementary [ref=e56]:
+          - paragraph [ref=e57]: On this page
+          - navigation [ref=e58]:
+            - list [ref=e59]:
+              - listitem [ref=e60]:
+                - link "Homebrew (macOS / Linux)" [ref=e61] [cursor=pointer]:
+                  - /url: "#homebrew-macos--linux"
+              - listitem [ref=e62]:
+                - link "Install script (macOS / Linux)" [ref=e63] [cursor=pointer]:
+                  - /url: "#install-script-macos--linux"
+              - listitem [ref=e64]:
+                - link "go install" [ref=e65] [cursor=pointer]:
+                  - /url: "#go-install"
+              - listitem [ref=e66]:
+                - link "Prebuilt binaries" [ref=e67] [cursor=pointer]:
+                  - /url: "#prebuilt-binaries"
+              - listitem [ref=e68]:
+                - link "Verify" [ref=e69] [cursor=pointer]:
+                  - /url: "#verify"
+    - contentinfo [ref=e70]:
+      - paragraph [ref=e71]:
+        - text: © 2026 Nemi ·
+        - link "GitHub" [ref=e72] [cursor=pointer]:
+          - /url: https://github.com/thisisbalu
+  - button "Back to top": ↑

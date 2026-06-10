@@ -43,9 +43,11 @@ and missing titles. Exits non-zero on any error, so it fits in CI.
 ```bash
 nemi migrate hugo <src> [dest]     # convert a Hugo site
 nemi migrate jekyll <src> [dest]   # convert a Jekyll site
+nemi migrate html <src> [dest]     # convert a folder of raw HTML pages
 ```
 
-Converts an existing site to Nemi format. `dest` defaults to `<src>-nemi`.
+Converts an existing site to Nemi format (scaffolding the default theme so it
+builds immediately). `dest` defaults to `<src>-nemi`.
 See [Migrating](@/docs/migrating.md) for details.
 
 ## version

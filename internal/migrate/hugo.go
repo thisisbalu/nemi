@@ -33,6 +33,9 @@ func Hugo(src, dst string) (*Result, error) {
 	if err := writeNemiToml(dst, cfg); err != nil {
 		return nil, err
 	}
+	if err := copyScaffoldTheme(dst); err != nil {
+		return nil, err
+	}
 
 	contentSrc := filepath.Join(src, "content")
 	if _, err := os.Stat(contentSrc); err == nil {

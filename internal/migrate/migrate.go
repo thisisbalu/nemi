@@ -8,8 +8,40 @@ import (
 	"path/filepath"
 
 	"gopkg.in/yaml.v3"
+
 	"github.com/thisisbalu/nemi/internal/config"
+	"github.com/thisisbalu/nemi/scaffold"
 )
+
+// copyScaffoldTheme copies the default theme — layouts/ and static/ — from the
+// embedded scaffold into dst, so a migrated site builds and serves out of the
+// box. Called by every migrator before source static is copied, so a source
+// asset can still overlay a scaffold one of the same name.
+func copyScaffoldTheme(dst string) error {
+	for _, dir := range []string{"layouts", "static"} {
+		err := fs.WalkDir(scaffold.FS, dir, func(p string, d fs.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if d.IsDir() {
+				return nil
+			}
+			data, err := scaffold.FS.ReadFile(p)
+			if err != nil {
+				return err
+			}
+			target := filepath.Join(dst, p)
+			if err := os.MkdirAll(filepath.Dir(target), 0755); err != nil {
+				return err
+			}
+			return os.WriteFile(target, data, 0644)
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 // Result summarizes a completed migration.
 type Result struct {

@@ -31,6 +31,9 @@ func Jekyll(src, dst string) (*Result, error) {
 	if err := writeNemiToml(dst, cfg); err != nil {
 		return nil, err
 	}
+	if err := copyScaffoldTheme(dst); err != nil {
+		return nil, err
+	}
 
 	// _posts/ → content/blog/
 	postsDir := filepath.Join(src, "_posts")

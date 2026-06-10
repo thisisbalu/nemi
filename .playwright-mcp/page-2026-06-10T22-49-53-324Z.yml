@@ -1,0 +1,59 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Nemi":
+        - /url: /
+      - navigation [ref=e4]:
+        - link "Docs" [ref=e5] [cursor=pointer]:
+          - /url: /docs/
+        - link "GitHub" [ref=e6] [cursor=pointer]:
+          - /url: https://github.com/thisisbalu/nemi
+        - button "Search" [ref=e7] [cursor=pointer]:
+          - img [ref=e8]
+        - button "Toggle light/dark theme" [ref=e11] [cursor=pointer]: ◐
+  - generic [ref=e12]:
+    - main [ref=e13]:
+      - generic [ref=e14]:
+        - heading "Nemi" [level=1] [ref=e15]
+        - paragraph [ref=e16]: A fast, zero-config static site generator.
+        - paragraph [ref=e17]: Markdown + Go templates → plain, fast HTML. A polished theme, search, responsive images, and SEO — all on by default, in a single binary.
+        - paragraph [ref=e18]:
+          - link "Get started →" [ref=e19] [cursor=pointer]:
+            - /url: /docs/
+          - link "GitHub" [ref=e20] [cursor=pointer]:
+            - /url: https://github.com/thisisbalu/nemi
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - code [ref=e23]:
+            - generic [ref=e24]: brew install thisisbalu/tap/nemi
+            - generic [ref=e26]: nemi new mysite && cd mysite
+            - generic [ref=e27]: nemi serve
+          - button "Copy" [ref=e28] [cursor=pointer]
+        - paragraph [ref=e29]:
+          - text: Nemi turns Markdown and Go templates into plain, fast HTML. Unlike other generators, the things you usually have to wire up yourself — a polished theme, full-text search, responsive images, SEO meta, sitemap, and RSS — are
+          - strong [ref=e30]: on by default
+          - text: . One binary, no plugins, no config required.
+        - list [ref=e31]:
+          - listitem [ref=e32]:
+            - strong [ref=e33]: Beautiful by default.
+            - text: A minimal, typographic theme with automatic dark mode, syntax highlighting, a sticky table of contents, math, and diagrams.
+          - listitem [ref=e34]:
+            - strong [ref=e35]: Fast everywhere.
+            - text: Responsive images and minified output out of the box; builds in milliseconds.
+          - listitem [ref=e36]:
+            - strong [ref=e37]: Links that can’t break.
+            - text: Reference content by path — Nemi resolves it and
+            - emphasis [ref=e38]: fails the build
+            - text: if the target is gone.
+          - listitem [ref=e39]:
+            - strong [ref=e40]: Search with zero setup.
+            - text: A built-in client-side search index, no external service or extra binary.
+        - paragraph [ref=e41]:
+          - link "Get started →" [ref=e42] [cursor=pointer]:
+            - /url: /docs/installation/
+    - contentinfo [ref=e43]:
+      - paragraph [ref=e44]:
+        - text: © 2026 Nemi ·
+        - link "GitHub" [ref=e45] [cursor=pointer]:
+          - /url: https://github.com/thisisbalu
+  - button "Back to top": ↑

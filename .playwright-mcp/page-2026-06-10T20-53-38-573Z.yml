@@ -1,0 +1,196 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "Nemi" [ref=e4] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e5]:
+        - link "Docs" [ref=e6] [cursor=pointer]:
+          - /url: /docs/
+        - link "GitHub" [ref=e7] [cursor=pointer]:
+          - /url: https://github.com/thisisbalu/nemi
+        - button "Search" [ref=e8] [cursor=pointer]: ⌕
+        - button "Toggle light/dark theme" [ref=e9] [cursor=pointer]: ◐
+  - generic [ref=e10]:
+    - main [ref=e11]:
+      - generic [ref=e12]:
+        - article [ref=e13]:
+          - link "← Docs" [ref=e14] [cursor=pointer]:
+            - /url: /docs/
+          - heading "Features" [level=1] [ref=e15]
+          - paragraph [ref=e16]:
+            - time [ref=e17]: February 1, 2026
+            - text: · 2 min read
+          - generic [ref=e18]:
+            - paragraph [ref=e19]:
+              - text: Everything here works with
+              - strong [ref=e20]: zero configuration
+              - text: . This page is built with Nemi, so what you’re reading is also the demo.
+            - heading "Search Link to this section" [level=2] [ref=e21]:
+              - text: Search
+              - link "Link to this section" [ref=e22] [cursor=pointer]:
+                - /url: "#search"
+                - text: "#"
+            - paragraph [ref=e23]:
+              - text: A client-side full-text search index is generated on every build. Press / or ⌘K to try it. No external service, no extra binary — just a JSON index your browser filters. Disable it with
+              - code [ref=e24]: "[search] disable = true"
+              - text: .
+            - heading "Responsive images Link to this section" [level=2] [ref=e25]:
+              - text: Responsive images
+              - link "Link to this section" [ref=e26] [cursor=pointer]:
+                - /url: "#responsive-images"
+                - text: "#"
+            - paragraph [ref=e27]:
+              - text: Local images are automatically resized into a
+              - code [ref=e28]: srcset
+              - text: "with intrinsic dimensions and lazy loading, so visitors download the right size and pages don’t shift as they load:"
+            - generic [ref=e29]:
+              - code [ref=e30]:
+                - generic [ref=e32]: "![A diagram](/diagram.jpg)"
+              - button "Copy" [ref=e33] [cursor=pointer]
+            - paragraph [ref=e34]:
+              - text: becomes an
+              - code [ref=e35]: <img srcset="…480w, …800w, …1200w" sizes="…" width height loading="lazy">
+              - text: — no manual work.
+            - heading "Social cards & SEO Link to this section" [level=2] [ref=e36]:
+              - text: Social cards & SEO
+              - link "Link to this section" [ref=e37] [cursor=pointer]:
+                - /url: "#social-cards--seo"
+                - text: "#"
+            - paragraph [ref=e38]:
+              - text: Every page gets OpenGraph and Twitter Card tags, schema.org JSON-LD, and an auto-generated 1200×630 social card image — so links look great when shared. Sitemap, RSS, canonical URLs, and
+              - code [ref=e39]: robots.txt
+              - text: are written too.
+            - heading "Syntax highlighting Link to this section" [level=2] [ref=e40]:
+              - text: Syntax highlighting
+              - link "Link to this section" [ref=e41] [cursor=pointer]:
+                - /url: "#syntax-highlighting"
+                - text: "#"
+            - paragraph [ref=e42]: "Fenced code blocks are highlighted at build time (no client-side JS), with a copy button and light/dark-aware colors:"
+            - generic [ref=e43]:
+              - code [ref=e44]:
+                - generic [ref=e46]: "func main() {"
+                - generic [ref=e48]: fmt.Println("Hello, Nemi")
+                - generic [ref=e50]: "}"
+              - button "Copy" [ref=e51] [cursor=pointer]
+            - heading "Math Link to this section" [level=2] [ref=e52]:
+              - text: Math
+              - link "Link to this section" [ref=e53] [cursor=pointer]:
+                - /url: "#math"
+                - text: "#"
+            - paragraph [ref=e54]:
+              - text: Write LaTeX with
+              - code [ref=e55]: "math: true"
+              - text: "in your frontmatter:"
+            - paragraph [ref=e56]:
+              - generic [ref=e59]:
+                - math [ref=e61]:
+                  - generic [ref=e63]:
+                    - generic [ref=e64]: χ
+                    - generic [ref=e65]: (
+                    - generic [ref=e66]: s
+                    - generic [ref=e67]: )
+                    - generic [ref=e68]: =
+                    - generic [ref=e69]:
+                      - generic [ref=e70]: ∑
+                      - generic [ref=e71]:
+                        - generic [ref=e72]: "n"
+                        - generic [ref=e73]: =
+                        - generic [ref=e74]: "1"
+                      - generic [ref=e75]: ∞
+                    - generic [ref=e76]:
+                      - generic [ref=e77]: "1"
+                      - generic [ref=e78]:
+                        - generic [ref=e79]: "n"
+                        - generic [ref=e80]: s
+                - generic [ref=e81]:
+                  - generic [ref=e82]: χ(s) =
+                  - generic [ref=e83]:
+                    - generic [ref=e87]:
+                      - generic [ref=e89]: n=1
+                      - generic [ref=e90]: ∑
+                      - generic [ref=e92]: ∞
+                    - generic [ref=e100]:
+                      - generic [ref=e102]:
+                        - text: "n"
+                        - generic [ref=e108]: s
+                      - generic [ref=e110]: "1"
+            - paragraph [ref=e114]:
+              - text: Inline math like
+              - generic [ref=e116]:
+                - math [ref=e118]:
+                  - generic [ref=e120]:
+                    - generic [ref=e121]:
+                      - generic [ref=e122]: e
+                      - generic [ref=e123]:
+                        - generic [ref=e124]: i
+                        - generic [ref=e125]: π
+                    - generic [ref=e126]: +
+                    - generic [ref=e127]: "1"
+                    - generic [ref=e128]: =
+                    - generic [ref=e129]: "0"
+                - generic [ref=e130]:
+                  - generic [ref=e131]:
+                    - generic [ref=e132]:
+                      - text: e
+                      - generic [ref=e138]: iπ
+                    - text: +
+                  - generic [ref=e139]: 1 =
+                  - generic [ref=e140]: "0"
+              - text: works too.
+            - heading "Diagrams Link to this section" [level=2] [ref=e141]:
+              - text: Diagrams
+              - link "Link to this section" [ref=e142] [cursor=pointer]:
+                - /url: "#diagrams"
+                - text: "#"
+            - paragraph [ref=e143]: "Fenced ```mermaid blocks render as diagrams:"
+            - img [ref=e146]
+            - heading "And the basics Link to this section" [level=2] [ref=e147]:
+              - text: And the basics
+              - link "Link to this section" [ref=e148] [cursor=pointer]:
+                - /url: "#and-the-basics"
+                - text: "#"
+            - paragraph [ref=e149]:
+              - text: Tables, footnotes
+              - superscript [ref=e150]:
+                - link "1" [ref=e151] [cursor=pointer]:
+                  - /url: "#fn:1"
+              - text: ", task lists, smart typography, tags, pagination, a sticky table of contents, and automatic dark mode — all included."
+            - generic [ref=e152]:
+              - separator [ref=e153]
+              - list [ref=e154]:
+                - listitem [ref=e155]:
+                  - paragraph [ref=e156]:
+                    - text: Like this one.
+                    - link "↩︎" [ref=e157] [cursor=pointer]:
+                      - /url: "#fnref:1"
+        - complementary [ref=e158]:
+          - paragraph [ref=e159]: On this page
+          - navigation [ref=e160]:
+            - list [ref=e161]:
+              - listitem [ref=e162]:
+                - link "Search" [ref=e163] [cursor=pointer]:
+                  - /url: "#search"
+              - listitem [ref=e164]:
+                - link "Responsive images" [ref=e165] [cursor=pointer]:
+                  - /url: "#responsive-images"
+              - listitem [ref=e166]:
+                - link "Social cards & SEO" [ref=e167] [cursor=pointer]:
+                  - /url: "#social-cards--seo"
+              - listitem [ref=e168]:
+                - link "Syntax highlighting" [ref=e169] [cursor=pointer]:
+                  - /url: "#syntax-highlighting"
+              - listitem [ref=e170]:
+                - link "Math" [ref=e171] [cursor=pointer]:
+                  - /url: "#math"
+              - listitem [ref=e172]:
+                - link "Diagrams" [ref=e173] [cursor=pointer]:
+                  - /url: "#diagrams"
+              - listitem [ref=e174]:
+                - link "And the basics" [ref=e175] [cursor=pointer]:
+                  - /url: "#and-the-basics"
+    - contentinfo [ref=e176]:
+      - paragraph [ref=e177]:
+        - text: © 2026 Nemi ·
+        - link "GitHub" [ref=e178] [cursor=pointer]:
+          - /url: https://github.com/thisisbalu
+  - button "Back to top": ↑
