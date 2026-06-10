@@ -66,8 +66,13 @@ func Run(serveMode, drafts bool) (Stats, error) {
 		return stats, err
 	}
 
-	// Minify only for production builds; serve keeps output readable and fast.
+	// Production-only post-passes; serve keeps output readable and rebuilds fast.
 	if !serveMode {
+		if !cfg.Images.Disable {
+			if err := optimizeImages("public", cfg); err != nil {
+				return stats, err
+			}
+		}
 		return stats, minifyTree("public")
 	}
 	return stats, nil

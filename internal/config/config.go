@@ -13,9 +13,19 @@ type Config struct {
 	Description string      `toml:"description"`
 	Author      Author      `toml:"author"`
 	Pages       PagesConfig `toml:"pages"`
-	Menu        []MenuItem  `toml:"menu"`
-	Paginate    int         `toml:"paginate"`
-	Giscus      Giscus      `toml:"giscus"`
+	Menu        []MenuItem   `toml:"menu"`
+	Paginate    int          `toml:"paginate"`
+	Giscus      Giscus       `toml:"giscus"`
+	Images      ImagesConfig `toml:"images"`
+}
+
+// ImagesConfig controls the responsive image pipeline. Zero-valued fields fall
+// back to sensible defaults in Load, so the feature works with no configuration.
+type ImagesConfig struct {
+	Widths  []int  `toml:"widths"`  // target srcset widths (default 480/800/1200)
+	Quality int    `toml:"quality"` // JPEG quality 1-100 (default 82)
+	Sizes   string `toml:"sizes"`   // the <img sizes> attribute
+	Disable bool   `toml:"disable"` // turn the pipeline off entirely
 }
 
 // Giscus configures GitHub-Discussions-backed comments (opt-in). Comments
@@ -82,5 +92,18 @@ func Load(path string) (Config, error) {
 	sort.SliceStable(cfg.Menu, func(i, j int) bool {
 		return cfg.Menu[i].Weight < cfg.Menu[j].Weight
 	})
+
+	// Apply image-pipeline defaults so it works with zero configuration.
+	if len(cfg.Images.Widths) == 0 {
+		cfg.Images.Widths = []int{480, 800, 1200}
+	} else {
+		sort.Ints(cfg.Images.Widths)
+	}
+	if cfg.Images.Quality <= 0 || cfg.Images.Quality > 100 {
+		cfg.Images.Quality = 82
+	}
+	if cfg.Images.Sizes == "" {
+		cfg.Images.Sizes = "(max-width: 960px) 100vw, 960px"
+	}
 	return cfg, nil
 }
