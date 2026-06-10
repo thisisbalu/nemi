@@ -124,11 +124,34 @@ func TestIsRelativeRef(t *testing.T) {
 	}
 }
 
+func TestResolveRef(t *testing.T) {
+	cases := []struct {
+		pageRel, ref string
+		isLink       bool
+		want         string
+	}{
+		{"index.html", "about.html", true, "/about/"},
+		{"index.html", "blog/post.html", true, "/blog/post/"},
+		{"blog/post.html", "other.html", true, "/blog/other/"},
+		{"blog/post.html", "../about.html", true, "/about/"},
+		{"about.html", "index.html", true, "/"},
+		{"about.html", "page.html#sec", true, "/page/#sec"},
+		{"index.html", "img/a.png", false, "/img/a.png"},
+		{"blog/post.html", "pic.png", false, "/blog/pic.png"},
+	}
+	for _, c := range cases {
+		if got := resolveRef(c.pageRel, c.ref, c.isLink); got != c.want {
+			t.Errorf("resolveRef(%q, %q, %v) = %q, want %q", c.pageRel, c.ref, c.isLink, got, c.want)
+		}
+	}
+}
+
 func TestHTML(t *testing.T) {
 	src := t.TempDir()
 	writeF(t, filepath.Join(src, "index.html"),
 		`<html><head><title>Home</title></head><body><nav>skipnav</nav>`+
-			`<main><h1>Home</h1><p>Hi <b>there</b>.</p><img src="img/a.png" alt="A"></main>`+
+			`<main><h1>Home</h1><p>Hi <b>there</b>. See <a href="about.html">about</a>.</p>`+
+			`<img src="img/a.png" alt="A"></main>`+
 			`<footer>skipfoot</footer></body></html>`)
 	writeF(t, filepath.Join(src, "img", "a.png"), "PNG")
 
@@ -157,6 +180,9 @@ func TestHTML(t *testing.T) {
 	}
 	if !strings.Contains(s, "/img/a.png") {
 		t.Errorf("image ref not absolutized: %s", s)
+	}
+	if !strings.Contains(s, "(/about/)") {
+		t.Errorf("relative .html link not rewritten to Nemi URL: %s", s)
 	}
 	if strings.Contains(s, "skipnav") || strings.Contains(s, "skipfoot") {
 		t.Errorf("nav/footer chrome should be dropped: %s", s)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -79,10 +80,7 @@ func migrateHTMLFile(path, rel, dst string, conv *htmltomd.Converter, r *Result)
 	}
 
 	content := contentNode(doc)
-	absolutizeRefs(content)
-	if hasRelativePageLinks(content) {
-		r.warn(fmt.Sprintf("%s: relative links to .html pages — update them to Nemi URLs (e.g. /about/)", rel))
-	}
+	rewriteRefs(content, rel)
 
 	markdown, err := conv.ConvertString(innerHTML(content))
 	if err != nil {
@@ -157,19 +155,58 @@ func innerHTML(n *html.Node) string {
 	return b.String()
 }
 
-// absolutizeRefs rewrites relative src/href values to root-absolute, so images
-// copied into static/ resolve regardless of the page's URL depth.
-func absolutizeRefs(n *html.Node) {
+// rewriteRefs resolves relative src/href values against the page's directory.
+// Asset references become root-absolute (so images copied into static/ resolve
+// at any URL depth); links to other .html pages are mapped to their Nemi URL
+// (about.html → /about/, blog/post.html → /blog/post/). pageRel is the page's
+// path relative to the migration source.
+func rewriteRefs(n *html.Node, pageRel string) {
 	if n.Type == html.ElementNode {
 		for i, a := range n.Attr {
-			if (a.Key == "src" || a.Key == "href") && isRelativeRef(a.Val) {
-				n.Attr[i].Val = "/" + strings.TrimPrefix(a.Val, "./")
+			switch a.Key {
+			case "src":
+				if isRelativeRef(a.Val) {
+					n.Attr[i].Val = resolveRef(pageRel, a.Val, false)
+				}
+			case "href":
+				if isRelativeRef(a.Val) {
+					n.Attr[i].Val = resolveRef(pageRel, a.Val, true)
+				}
 			}
 		}
 	}
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		absolutizeRefs(c)
+		rewriteRefs(c, pageRel)
 	}
+}
+
+// resolveRef turns a relative ref on the page at pageRel into a root-absolute
+// URL. When isLink and the target is an .html/.htm page, it maps to that page's
+// Nemi URL; otherwise it's treated as an asset path. Any #fragment is preserved.
+func resolveRef(pageRel, ref string, isLink bool) string {
+	frag := ""
+	if i := strings.IndexByte(ref, '#'); i >= 0 {
+		frag, ref = ref[i:], ref[:i]
+	}
+	if ref == "" {
+		return frag
+	}
+	dir := path.Dir(filepath.ToSlash(pageRel))
+	resolved := path.Clean(path.Join(dir, ref))
+	if ext := strings.ToLower(path.Ext(resolved)); isLink && (ext == ".html" || ext == ".htm") {
+		return htmlSourceToURL(strings.TrimSuffix(resolved, path.Ext(resolved))) + frag
+	}
+	return "/" + resolved + frag
+}
+
+// htmlSourceToURL maps an extension-less HTML source path to its Nemi URL:
+// "index" → "/", "about" → "/about/", "blog/index" → "/blog/".
+func htmlSourceToURL(p string) string {
+	p = strings.TrimSuffix(p, "/index")
+	if p == "index" || p == "." || p == "" {
+		return "/"
+	}
+	return "/" + p + "/"
 }
 
 func isRelativeRef(u string) bool {
@@ -181,26 +218,6 @@ func isRelativeRef(u string) bool {
 		return false
 	}
 	return true
-}
-
-func hasRelativePageLinks(n *html.Node) bool {
-	found := false
-	var walk func(*html.Node)
-	walk = func(n *html.Node) {
-		if n.Type == html.ElementNode && n.Data == "a" {
-			for _, a := range n.Attr {
-				if a.Key == "href" && isRelativeRef(a.Val) &&
-					(strings.HasSuffix(a.Val, ".html") || strings.HasSuffix(a.Val, ".htm")) {
-					found = true
-				}
-			}
-		}
-		for c := n.FirstChild; c != nil; c = c.NextSibling {
-			walk(c)
-		}
-	}
-	walk(n)
-	return found
 }
 
 // stripLeadingH1 drops a leading "# Heading" line so it doesn't duplicate the

@@ -43,8 +43,11 @@ copied into Nemi's `static/`.
   else `<body>`), dropping nav/header/footer chrome, and converted to Markdown.
 - The page **title** comes from `<title>` (or the first `<h1>`), and a leading
   `<h1>` is dropped so it doesn't duplicate the title the theme renders.
-- Relative `src`/image paths are rewritten to root-absolute, and images and
-  other assets are copied into `static/`.
+- **Links between pages are rewritten to Nemi URLs** — `about.html` becomes
+  `/about/`, `blog/post.html` becomes `/blog/post/`, and `../about.html`
+  resolves correctly from nested pages.
+- Image and asset paths are resolved against the page's location and made
+  root-absolute, and the assets are copied into `static/`.
 - Old stylesheets and scripts are skipped — Nemi ships its own theme.
 
 `index.html` becomes the home page; `blog/post.html` becomes `/blog/post/`.
@@ -59,8 +62,9 @@ for warnings about:
 - **Jekyll Liquid** (`{% … %}`, `{{ … }}`) — same; review by hand.
 - **Permalinks** — custom `permalink:` values are reported but not applied; set
   a `slug:` in frontmatter if you need to preserve a specific URL.
-- **Relative HTML links** — links like `about.html` between raw HTML pages are
-  flagged; update them to Nemi URLs (e.g. `/about/`) or `@/`-style references.
+- **HTML links to missing pages** — relative links are rewritten to Nemi URLs
+  automatically, but a link to a page that wasn't migrated will resolve to a
+  dead URL. `nemi check` flags any that don't point to a real page.
 
 ## After migrating
 
