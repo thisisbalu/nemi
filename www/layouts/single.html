@@ -1,0 +1,14 @@
+{{define "content"}}
+<div class="post-layout">
+  <article>
+    {{if .Page.Section}}<a class="back-link" href="/{{.Page.Section}}/">← {{title .Page.Section}}</a>{{end}}
+    <h1>{{.Page.Title}}</h1>
+    {{if not .Page.Date.IsZero}}<p class="post-meta"><time>{{.Page.Date.Format "January 2, 2006"}}</time>{{if .Page.ReadingTime}} · {{.Page.ReadingTime}} min read{{end}}</p>{{end}}
+    {{if .Page.TOC}}<div class="toc-inline">{{.Page.TOC}}</div>{{end}}
+    <div class="prose">{{.Page.Content}}</div>
+    {{if .Page.Tags}}<p class="tags">{{range .Page.Tags}}<a href="/tags/{{urlize .}}/">#{{.}}</a> {{end}}</p>{{end}}
+    {{if .Site.Config.Giscus.Enabled}}{{template "comments" .}}{{end}}
+  </article>
+  {{if .Page.TOC}}<aside class="toc-rail"><p class="toc-label">On this page</p>{{.Page.TOC}}</aside>{{end}}
+</div>
+{{end}}

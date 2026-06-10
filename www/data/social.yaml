@@ -1,0 +1,10 @@
+# Example data file. Anything here is available in templates as
+# .Site.Data.social — e.g. {{range .Site.Data.social}}<a href="{{.url}}">{{.name}}</a>{{end}}
+# Add more files under data/ (.yaml, .toml, or .json); data/team/lead.json
+# would be reachable as .Site.Data.team.lead.
+- name: GitHub
+  url: https://github.com/yourusername
+- name: Mastodon
+  url: https://mastodon.social/@yourusername
+- name: RSS
+  url: /feed.xml

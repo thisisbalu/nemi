@@ -1,0 +1,12 @@
+{{define "content"}}
+<section class="hero">
+  <h1>{{.Site.Config.Author.Name}}</h1>
+  {{with .Site.Config.Author.Tagline}}<p class="tagline">{{.}}</p>{{end}}
+  {{with .Site.Config.Author.Bio}}<p class="bio">{{.}}</p>{{end}}
+  <p class="links">
+    <a href="/docs/">Get started →</a>
+    <a href="https://github.com/thisisbalu/nemi">GitHub</a>
+  </p>
+</section>
+{{if .Page.Content}}<div class="prose">{{.Page.Content}}</div>{{end}}
+{{end}}

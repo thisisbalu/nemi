@@ -1,0 +1,33 @@
+{{define "content"}}
+<article class="publications">
+  <h1>{{.Page.Title}}</h1>
+  {{if .Page.Content}}<div class="prose">{{.Page.Content}}</div>{{end}}
+
+  {{with .Site.Data.publications}}
+  {{range .}}
+  <section class="pub-year">
+    <h2>{{.year}}</h2>
+    <ul class="pub-list">
+      {{range .papers}}
+      <li class="pub{{if .selected}} pub-selected{{end}}">
+        <p class="pub-title">{{.title}}</p>
+        {{with .authors}}<p class="pub-authors">{{.}}</p>{{end}}
+        {{with .venue}}<p class="pub-venue">{{.}}</p>{{end}}
+        {{if or .url .pdf .code}}
+        <p class="pub-links">
+          {{with .url}}<a href="{{.}}">Link</a>{{end}}
+          {{with .pdf}}<a href="{{.}}">PDF</a>{{end}}
+          {{with .code}}<a href="{{.}}">Code</a>{{end}}
+        </p>
+        {{end}}
+      </li>
+      {{end}}
+    </ul>
+  </section>
+  {{end}}
+  {{else}}
+  <p>Add your publications in <code>data/publications.yaml</code>, then create a
+  <code>content/publications.md</code> page to display them.</p>
+  {{end}}
+</article>
+{{end}}

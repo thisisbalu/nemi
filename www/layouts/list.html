@@ -1,0 +1,31 @@
+{{define "content"}}
+<section>
+  <h1>{{.Page.Title}}</h1>
+  <ul class="post-list">
+    {{range where .Page.Pages "Featured" true}}
+    <li class="pinned">
+      <span class="pin">Pinned</span>
+      <a href="{{.URL}}">{{.Title}}</a>
+      {{if not .Date.IsZero}}<time>{{.Date.Format "Jan 2006"}}</time>{{end}}
+      {{if .Description}}<p class="post-summary">{{.Description}}</p>{{else if .Summary}}<p class="post-summary">{{.Summary}}</p>{{end}}
+    </li>
+    {{end}}
+    {{range where .Page.Pages "Featured" false}}
+    <li>
+      <a href="{{.URL}}">{{.Title}}</a>
+      {{if not .Date.IsZero}}<time>{{.Date.Format "Jan 2006"}}</time>{{end}}
+      {{if .Description}}<p class="post-summary">{{.Description}}</p>{{else if .Summary}}<p class="post-summary">{{.Summary}}</p>{{end}}
+    </li>
+    {{end}}
+  </ul>
+  {{$tags := uniqueTags (where .Site.Pages "Section" .Page.Section)}}
+  {{if $tags}}<div class="tag-cloud-inline">{{range $tags}}<a href="/tags/{{urlize .}}/">#{{.}}</a>{{end}}</div>{{end}}
+  {{with .Page.Paginator}}{{if gt .TotalPages 1}}
+  <nav class="pagination">
+    {{if .PrevURL}}<a href="{{.PrevURL}}" rel="prev">← Newer</a>{{else}}<span></span>{{end}}
+    <span class="page-of">Page {{.PageNumber}} of {{.TotalPages}}</span>
+    {{if .NextURL}}<a href="{{.NextURL}}" rel="next">Older →</a>{{else}}<span></span>{{end}}
+  </nav>
+  {{end}}{{end}}
+</section>
+{{end}}

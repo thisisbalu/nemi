@@ -1,0 +1,13 @@
+{{define "content"}}
+<section>
+  <h1>{{.Page.Title}}</h1>
+  {{range .Page.Pages}}{{template "project-card" .}}{{end}}
+  {{with .Page.Paginator}}{{if gt .TotalPages 1}}
+  <nav class="pagination">
+    {{if .PrevURL}}<a href="{{.PrevURL}}" rel="prev">← Newer</a>{{else}}<span></span>{{end}}
+    <span class="page-of">Page {{.PageNumber}} of {{.TotalPages}}</span>
+    {{if .NextURL}}<a href="{{.NextURL}}" rel="next">Older →</a>{{else}}<span></span>{{end}}
+  </nav>
+  {{end}}{{end}}
+</section>
+{{end}}

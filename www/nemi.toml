@@ -1,0 +1,33 @@
+title       = "Nemi"
+baseURL     = "https://thisisbalu.github.io/nemi/"
+description = "A fast, zero-config static site generator that builds beautiful sites out of the box."
+paginate    = 20
+
+[author]
+name    = "Nemi"
+tagline = "A fast, zero-config static site generator."
+bio     = "Markdown + Go templates → plain, fast HTML. A polished theme, search, responsive images, and SEO — all on by default, in a single binary."
+github  = "thisisbalu"
+
+[pages]
+about        = false
+resume       = false
+projects     = false
+blog         = false
+updates      = false
+now          = false
+uses         = false
+speaking     = false
+open-source  = false
+contact      = false
+
+[[menu]]
+name   = "Docs"
+url    = "/docs/"
+weight = 1
+
+[[menu]]
+name     = "GitHub"
+url      = "https://github.com/thisisbalu/nemi"
+weight   = 2
+external = true
