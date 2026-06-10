@@ -112,10 +112,20 @@ func (mermaidRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
 func renderMermaid(w util.BufWriter, _ []byte, n ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		w.WriteString(`<pre class="mermaid">`)
-		w.WriteString(template.HTMLEscapeString(n.(*mermaidBlock).code))
+		w.WriteString(escapeMermaid(n.(*mermaidBlock).code))
 		w.WriteString("</pre>\n")
 	}
 	return ast.WalkSkipChildren, nil
+}
+
+// escapeMermaid escapes only the characters that are unsafe in HTML text — `&`
+// and `<`. Crucially it leaves `>` raw: escaping arrows to `--&gt;` breaks
+// mermaid.js, which reads some elements via innerHTML and then parses the
+// literal entity. Inside a <pre>, a bare `>` is valid HTML.
+func escapeMermaid(s string) string {
+	s = strings.ReplaceAll(s, "&", "&amp;")
+	s = strings.ReplaceAll(s, "<", "&lt;")
+	return s
 }
 
 type Page struct {

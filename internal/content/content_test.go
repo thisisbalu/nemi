@@ -133,8 +133,8 @@ func TestMermaidBlock(t *testing.T) {
 		t.Fatalf("parseFile: %v", err)
 	}
 	html := string(p.Content)
-	if !strings.Contains(html, `<pre class="mermaid">graph TD; A--&gt;B;`) {
-		t.Errorf("mermaid block not rendered raw: %s", html)
+	if !strings.Contains(html, `<pre class="mermaid">graph TD; A-->B;`) {
+		t.Errorf("mermaid block not rendered raw (arrows must stay -->): %s", html)
 	}
 	if !p.Mermaid {
 		t.Error("Mermaid flag should be set")

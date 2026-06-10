@@ -19,8 +19,9 @@
     if (id) (tocLinks[id] = tocLinks[id] || []).push(a);
   });
 
-  // Code copy buttons
-  document.querySelectorAll('.prose pre').forEach(function (pre) {
+  // Code copy buttons (skip mermaid blocks — a button inside would pollute the
+  // diagram source mermaid.js reads, and you don't copy a diagram anyway)
+  document.querySelectorAll('.prose pre:not(.mermaid)').forEach(function (pre) {
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'copy-btn';
