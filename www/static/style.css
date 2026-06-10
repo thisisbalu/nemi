@@ -1196,6 +1196,11 @@ section > h1 {
     justify-content: center;
     padding: 12vh 1rem 1rem;
 }
+/* display:flex above would override the [hidden] attribute's display:none,
+   leaving the modal permanently open — re-assert hidden explicitly. */
+.search-modal[hidden] {
+    display: none;
+}
 .search-panel {
     background: var(--bg);
     border: 1px solid var(--border);
