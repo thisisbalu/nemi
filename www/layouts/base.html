@@ -35,7 +35,8 @@
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
     var d = document.documentElement;
     var dark = d.dataset.theme === 'dark' || (matchMedia('(prefers-color-scheme: dark)').matches && d.dataset.theme !== 'light');
-    mermaid.initialize({ startOnLoad: true, theme: dark ? 'dark' : 'neutral' });
+    mermaid.initialize({ startOnLoad: false, theme: dark ? 'dark' : 'neutral' });
+    await mermaid.run({ querySelector: '.mermaid' });
   </script>
   {{end}}
   {{if .ServeMode}}<script>(function(){var s=new EventSource('/__nemi_reload');s.onmessage=function(e){if(e.data.indexOf('error:')===0){var o=document.getElementById('__nemi_err')||document.body.appendChild(document.createElement('div'));o.id='__nemi_err';o.style.cssText='position:fixed;inset:0;z-index:99999;background:#1f2937;color:#fca5a5;font:14px/1.6 ui-monospace,monospace;padding:2rem;white-space:pre-wrap;overflow:auto';o.textContent='Build error\n\n'+e.data.slice(6);}else{location.reload();}};})();</script>{{end}}
